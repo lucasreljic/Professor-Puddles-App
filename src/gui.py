@@ -46,7 +46,8 @@ class GUI:
         self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, 2080)
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 4020)
 
-        self.label_widget = tk.Label(root, borderwidth=2, relief="solid")
+        self.label_widget = tk.Label(root, borderwidth=2, relief="solid", highlightthickness=2,
+                                     highlightbackground="black")  # Initially set for LIGHT_MODE
         self.label_widget.place(relx=0.17, rely=0.05, relwidth=0.8, relheight=0.8)
 
         self.theme = LIGHT_MODE  # Start with light mode
@@ -84,6 +85,9 @@ class GUI:
             self.btn_stop: "#FF8888",
             self.btn_setup: "light blue"
         }
+
+        border_color = "black" if theme == LIGHT_MODE else "white"
+        self.label_widget.configure(highlightbackground=border_color)
 
         for btn, color in button_configurations.items():
             btn.configure(bg=color)
