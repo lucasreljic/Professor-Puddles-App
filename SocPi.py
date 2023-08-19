@@ -34,7 +34,7 @@ def ServoInitialize():
 
 def ServoTester(i):
     print(i)
-    servo = servos(i)
+    servo = servos[i]
     servo.value = 1
     sleep(1)
     servo.value = 0
