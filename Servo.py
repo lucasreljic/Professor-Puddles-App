@@ -1,24 +1,43 @@
 from gpiozero import AngularServo
 from time import sleep
-import RPi.GPIO as GPIO  
+import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
 
 #servo pins
-minPW=0.001
-maxPW=0.002
+minPW=0.0003
+maxPW=0.0027
+
+
 
 servo = AngularServo(18,min_pulse_width=minPW,max_pulse_width=maxPW)
 
-try:
-    servo.value = -0.5
+def Water():
+    default = -0.3
+    delay = 0.333
+    servo.value = default
     sleep(2)
 
     for i in range(5):
         servo.value = -1
-        sleep(0.333)
-        servo.value = -0.5
-        sleep(0.333)
+        sleep(delay)
+        servo.value = default
+        sleep(delay)
+
+def Bubbles():
+    default = 0
+    delay = 0.231
+    servo.value = default
+    sleep(2)
+
+    for i in range(10):
+        servo.value = 1
+        sleep(delay)
+        servo.value = default
+        sleep(delay)
+
+try:
+    Bubbles()
 
 finally:
     GPIO.cleanup()
