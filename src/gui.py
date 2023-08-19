@@ -66,8 +66,8 @@ class GUI:
 
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
         self.dropdown = self.create_styled_combobox(dropdown_values, 0.02, 0.05)
-        self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.45)
-        self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.55)
+        self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.4)
+        self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.5)
         self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.8)
 
         self.is_playing = False
@@ -125,7 +125,7 @@ class GUI:
 
     def create_rounded_button(self, text, color, cmd, relx, rely):
         canvas = Canvas(self.root, bg=color, bd=0, highlightthickness=0, relief='ridge')
-        canvas.place(relx=relx, rely=rely, relwidth=0.15, relheight=0.08)
+        canvas.place(relx=relx, rely=rely, relwidth=0.11, relheight=0.08)
 
         r = 5
         btn_shape = self.create_rounded_rectangle(canvas, 10, 10, 10 + 150, 10 + 40, r, outline=color, fill=color,
@@ -147,7 +147,7 @@ class GUI:
                               padding=10,
                               font=("Helvetica", 12))
         combo = Combobox(self.root, values=values, style="TCombobox")
-        combo.place(relx=relx, rely=rely, relwidth=0.15)
+        combo.place(relx=relx, rely=rely, relwidth=0.12)
         return combo
 
     def start(self):
