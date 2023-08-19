@@ -26,7 +26,7 @@ DARK_MODE = {
     "text": "white",
     "btn": "#black",
     "btn_text": "white",
-    "dropdown_bg": "white",
+    "dropdown_bg": "black",
     "dropdown_text": "white",
     "highlight": "#666666"
 }
@@ -55,8 +55,17 @@ class GUI:
         self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.35)
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.45)
 
-        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", self.theme["btn"], self.toggle_theme, 0.02, 0.45)
-        self.btn_theme_toggle.place(relx=0.04, rely=0.05, relwidth=0.15, relheight=0.08)
+        # Change the position for the Toggle Theme button to be placed under the Setup button
+        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "light blue", self.toggle_theme, 0.02, 0.55)
+
+        # Read data from the JSON file
+        with open('data.json') as json_file:
+            loaded_data = json.load(json_file)["people"]
+        dropdown_values = [loaded_data[0]["name"], loaded_data[1]["name"], loaded_data[2]["name"], loaded_data[3]["name"]]
+
+        # Adjusting the dropdown menu position
+        self.dropdown = self.create_styled_combobox(dropdown_values, 0.02, 0.65)
+        self.dropdown.set("Configs")
 
         dropdown_var = tk.StringVar()
         dropdown_var.set("Configs")
@@ -66,10 +75,6 @@ class GUI:
             loaded_data = json.load(json_file)["people"]
         dropdown_values = [loaded_data[0]["name"], loaded_data[1]["name"], loaded_data[2]["name"], loaded_data[3]["name"]]
 
-        self.dropdown = self.create_styled_combobox(dropdown_values, 0.15, 0.5)
-        self.dropdown.place(relx=0.01, rely=0.1, relwidth=0.1, relheight=0.05)
-        self.dropdown.set("Configs")
-
         self.is_playing = False
         self.update()
 
@@ -78,7 +83,16 @@ class GUI:
     def apply_theme(self, theme):
         self.root.configure(bg=theme["bg"])
         self.label_widget.configure(bg=theme["bg"], fg=theme["text"])
-        self.btn_theme_toggle.configure(bg=theme["btn"])
+
+        button_configurations = {
+            self.btn_start: "light green",
+            self.btn_stop: "#FF8888",
+            self.btn_setup: "light blue"
+        }
+
+        for btn, color in button_configurations.items():
+            btn.configure(bg=color)
+            btn.itemconfig("rectangle", fill=color, outline=color)
 
         # Configuring the dropdown style
         self.combo_style.configure("TCombobox",
@@ -96,18 +110,33 @@ class GUI:
 
         self.apply_theme(self.theme)
 
+    def create_rounded_rectangle(self, canvas, x1, y1, x2, y2, r, **kwargs):
+        """ Create a rounded rectangle """
+        points = [
+            x1 + r, y1,
+            x2 - r, y1,
+            x2, y1,
+            x2, y1 + r,
+            x2, y2 - r,
+            x2, y2,
+            x2 - r, y2,
+            x1 + r, y2,
+            x1, y2,
+            x1, y2 - r,
+            x1, y1 + r,
+            x1, y1
+        ]
+        return canvas.create_polygon(points, **kwargs)
+
     def create_rounded_button(self, text, color, cmd, relx, rely):
-        canvas = Canvas(self.root, bg=self.theme["bg"], bd=0, highlightthickness=0, relief='ridge')
-        canvas.place(relx=relx, rely=rely, relwidth=0.15,
-                     relheight=0.08)
+        canvas = Canvas(self.root, bg=color, bd=0, highlightthickness=0, relief='ridge')
+        canvas.place(relx=relx, rely=rely, relwidth=0.15, relheight=0.08)
 
-        # Using create_oval to make the button rounded
-        btn_shape = canvas.create_oval(10, 10, 10 + 150, 10 + 40, outline=color, fill=color, width=2)
+        r = 5
+        btn_shape = self.create_rounded_rectangle(canvas, 10, 10, 10 + 150, 10 + 40, r, outline=color, fill=color,
+                                                  width=2)
+        btn_id = canvas.create_text(80, 30, text=text, fill=self.theme["btn_text"], font=("Helvetica", 12))
 
-        btn_id = canvas.create_text(80, 25, text=text, fill=self.theme["btn_text"],
-                                    font=("Helvetica", 12))  # Removed "bold"
-
-        # Binding both the shape and the text to the button action
         canvas.tag_bind(btn_shape, '<ButtonPress-1>', lambda event, c=cmd: c())
         canvas.tag_bind(btn_id, '<ButtonPress-1>', lambda event, c=cmd: c())
 
@@ -152,8 +181,6 @@ class GUI:
         self.detector.get_position(img)  # DO NOT DELETE: this will give the landmark list
 
         # Interested angle
-        # r_turn = self.detector.find_angle(img, 6, 8, 0)
-        # l_turn = self.detector.find_angle(img, 3, 7, 0)
         front_posture = self.detector.find_angle(img, 11, 0, 12)
         left_shoulder = self.detector.find_angle(img, 9, 11, 12)
         right_shoulder = self.detector.find_angle(img, 10, 12, 11)
