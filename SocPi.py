@@ -35,31 +35,27 @@ def ServoTester(pin):
     sleep(1)
     servo.value = 0
 
-try:
 
-    ServoInitialize()
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((host, port))
-    s.listen(5)
-    print("Socket initialized")
-    print(host)
+ServoInitialize()
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((host, port))
+s.listen(5)
+print("Socket initialized")
+print(host)
 
-    while True:
-        clientsocket, address = s.accept()
-        print(f"Connection from {address} has been established.")
+while True:
+    clientsocket, address = s.accept()
+    print(f"Connection from {address} has been established.")
 
+    v = clientsocket.recv(8).decode('utf-8')
+    while v != "end":
+        #if v == "0":
+        #    Action0()
+        #if v == "1":
+        #    Action1()
+        #if v == "2":
+        #    Action2()
+        ServoTester[int(v)]
         v = clientsocket.recv(8).decode('utf-8')
-        while v != "end":
-            #if v == "0":
-            #    Action0()
-            #if v == "1":
-            #    Action1()
-            #if v == "2":
-            #    Action2()
-            ServoTester[int(v)]
-            v = clientsocket.recv(8).decode('utf-8')
 
-        print("Client disconnected")
-
-finally:
-#GPIO.cleanup()
+    print("Client disconnected")
