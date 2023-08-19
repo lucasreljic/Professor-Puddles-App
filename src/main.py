@@ -101,15 +101,15 @@ def main():
         # Interested angles
         # r_turn = detector.find_angle(img, 6, 8, 0)
         # l_turn = detector.find_angle(img, 3, 7, 0)
-        front_posture = detector.find_angle(img, 11, 0, 12)
+        # front_posture = detector.find_angle(img, 11, 0, 12)
         left_shoulder = detector.find_angle(img, 9, 11, 12)
-        right_shoulder = detector.find_angle(img, 10, 12, 11)
+        # right_shoulder = detector.find_angle(img, 10, 12, 11)
 
-        good_poster = True
-        if front_posture < 75 or front_posture > 95:
-            good_poster = False
+        # good_poster = True
+        # if front_posture < 75 or front_posture > 95:
+        #     good_poster = False
 
-        print(good_poster)
+        print(312 < left_shoulder < 317)
 
         cv2.imshow("Image", img)
         cv2.waitKey(1)
