@@ -27,11 +27,16 @@ class GUI:
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 4020)
 
         self.label_widget = tk.Label(root, bg="white", borderwidth=2, relief="solid")
-        self.label_widget.place(relx=0.15, rely=0.05, relwidth=0.8, relheight=0.8)
+        self.label_widget.place(relx=0.17, rely=0.05, relwidth=0.8, relheight=0.8)
 
-        self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.01, 0.05)
-        self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.01, 0.1)
+        self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.01, 0.15)
+        self.btn_start.place(relx=0.025, rely=0.15, relwidth=0.1)
+
+        self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.01, 0.15)
+        self.btn_stop.place(relx=0.025, rely=0.25, relwidth=0.1)
+
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.01, 0.15)
+        self.btn_setup.place(relx=0.025, rely=0.35, relwidth=0.1)
 
         dropdown_var = tk.StringVar()
         dropdown_var.set("Configs")
@@ -44,7 +49,7 @@ class GUI:
 
         self.dropdown = self.create_styled_combobox(dropdown_values, 0.05, 0.5)
         self.dropdown.set("Configs")
-        self.dropdown.place(relx=0.013, rely=0.25, relwidth=0.1)
+        self.dropdown.place(relx=0.025, rely=0.05, relwidth=0.1)
 
         self.is_playing = False
         self.update()
@@ -53,7 +58,8 @@ class GUI:
         canvas = Canvas(self.root, bg='white', bd=0, highlightthickness=0, relief='ridge')
         canvas.place(relx=relx, rely=rely, relwidth=0.15, relheight=0.1)
         canvas.create_rectangle(10, 10, 10 + 150, 10 + 40, outline=color, fill=color, width=2)
-        btn_id = canvas.create_text(85, 30, text=text, fill='white', font=("Helvetica", 12, "bold"))
+        btn_id = canvas.create_text(80, 30, text=text, fill='white',
+                                    font=("Helvetica", 12, "bold"))
         canvas.tag_bind(btn_id, '<ButtonPress-1>', lambda event, c=cmd: c())
 
         return canvas
