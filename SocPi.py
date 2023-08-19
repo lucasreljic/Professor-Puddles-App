@@ -43,19 +43,23 @@ s.listen(5)
 print("Socket initialized")
 print(host)
 
-while True:
-    clientsocket, address = s.accept()
-    print(f"Connection from {address} has been established.")
+try:
+    while True:
+        clientsocket, address = s.accept()
+        print(f"Connection from {address} has been established.")
 
-    v = clientsocket.recv(8).decode('utf-8')
-    while v != "end":
-        #if v == "0":
-        #    Action0()
-        #if v == "1":
-        #    Action1()
-        #if v == "2":
-        #    Action2()
-        ServoTester(servos[int(v)])
         v = clientsocket.recv(8).decode('utf-8')
+        while v != "end":
+            #if v == "0":
+            #    Action0()
+            #if v == "1":
+            #    Action1()
+            #if v == "2":
+            #    Action2()
+            ServoTester(servos[int(v)])
+            v = clientsocket.recv(8).decode('utf-8')
 
-    print("Client disconnected")
+        print("Client disconnected")
+
+finally:
+    GPIO.cleanup()
