@@ -14,7 +14,7 @@ newToast = Toast()
 LIGHT_MODE = {
     "bg": "white",
     "text": "black",
-    "btn": "#f5f5f5",
+    "btn": "white",
     "btn_text": "black",
     "dropdown_bg": "white",
     "dropdown_text": "black",
@@ -24,7 +24,7 @@ LIGHT_MODE = {
 DARK_MODE = {
     "bg": "black",
     "text": "white",
-    "btn": "#black",
+    "btn": "black",
     "btn_text": "white",
     "dropdown_bg": "black",
     "dropdown_text": "white",
@@ -51,21 +51,10 @@ class GUI:
 
         self.theme = LIGHT_MODE  # Start with light mode
 
-        self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.25)
-        self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.35)
-        self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.45)
-
-        # Change the position for the Toggle Theme button to be placed under the Setup button
-        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "light blue", self.toggle_theme, 0.02, 0.55)
-
         # Read data from the JSON file
         with open('data.json') as json_file:
             loaded_data = json.load(json_file)["people"]
         dropdown_values = [loaded_data[0]["name"], loaded_data[1]["name"], loaded_data[2]["name"], loaded_data[3]["name"]]
-
-        # Adjusting the dropdown menu position
-        self.dropdown = self.create_styled_combobox(dropdown_values, 0.02, 0.65)
-        self.dropdown.set("Configs")
 
         dropdown_var = tk.StringVar()
         dropdown_var.set("Configs")
@@ -74,6 +63,12 @@ class GUI:
         with open('data.json') as json_file:
             loaded_data = json.load(json_file)["people"]
         dropdown_values = [loaded_data[0]["name"], loaded_data[1]["name"], loaded_data[2]["name"], loaded_data[3]["name"]]
+
+        self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
+        self.dropdown = self.create_styled_combobox(dropdown_values, 0.02, 0.05)
+        self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.45)
+        self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.55)
+        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.8)
 
         self.is_playing = False
         self.update()
