@@ -22,15 +22,15 @@ class PoseDetector():
                                      min_tracking_confidence=self.trackCon)
 
     def find_pose(self, img, draw=True):
-        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        self.results = self.pose.process(imgRGB)
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        self.results = self.pose.process(img_rgb)
 
         if self.results.pose_landmarks:
             if draw:
                 self.mpDraw.draw_landmarks(img, self.results.pose_landmarks, self.mpPose.POSE_CONNECTIONS)
         return img
 
-    def getPosition(self, img):
+    def get_position(self, img):
         self.lmList = []
         if self.results.pose_landmarks:
             for id, lm in enumerate(self.results.pose_landmarks.landmark):
@@ -47,8 +47,8 @@ class PoseDetector():
     #     cv2.putText(img, str(int(fbs)), (70, 80), cv2.FONT_HERSHEY_PLAIN, 3,
     #                 (255, 0, 0), 3)
 
-    def findAngle(self, img, p1, p2, p3, draw=True):
-        # Get the landmark
+    def find_angle(self, img, p1, p2, p3, draw=True):
+
         try:
             x1, y1 = self.lmList[p1][1:]
             x2, y2 = self.lmList[p2][1:]
@@ -60,10 +60,12 @@ class PoseDetector():
             y2 = 0
             x3 = 0
             y3 = 0
-            print("out of bounds")
+            print("out of bounds")  # TODO: don't need print
+
         # Calculate the angle
         angle = math.degrees(math.atan2(y3 - y2, x3 - x2) - math.atan2(y1 - y2, x1 - x2))
-        # some time this angle comes zero, so below conditon we added
+
+        # some time this angle comes zero, so below condition we added
         if angle < 0:
             angle += 360
 
@@ -88,9 +90,9 @@ def main():
     while True:
         success, img = cap.read()
         img = detector.find_pose(img)
-        detector.getPosition(img)   # this will give the landmark list extremely important***
+        detector.get_position(img)   # this will give the landmark list extremely important***
         # print(lmList)
-        print(detector.findAngle(img, 6, 8, 0))
+        print(detector.find_angle(img, 6, 8, 0))
         # detector.showFps(img)
         cv2.imshow("Image", img)
         cv2.waitKey(1)
