@@ -13,4 +13,4 @@ for i in range(3):
     sleep(3)
     s.send(bytes(i))
 
-s.send("end")
+s.send(bytes("end"))

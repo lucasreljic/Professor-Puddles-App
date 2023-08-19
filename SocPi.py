@@ -5,6 +5,15 @@ import socket
 port = 8833
 host = '192.168.137.212' 
 
+def Action1():
+    print("1")
+
+def Action2():
+    print("2")
+
+def Action3():
+    print("3")
+
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))
 s.listen(5)
@@ -28,11 +37,4 @@ while True:
 
     print("Client disconnected")
 
-def Action1():
-    print("1")
 
-def Action2():
-    print("2")
-
-def Action3():
-    print("3")
