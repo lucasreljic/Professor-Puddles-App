@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import Canvas, OptionMenu
+from tkinter.ttk import Style, Combobox
+
 import cv2
 import json
 from main import main
@@ -21,25 +23,28 @@ class GUI:
         self.video_source = video_source
         self.vid = cv2.VideoCapture(self.video_source)
         self.detector = main()
-        self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 2020)
+        self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, 2080)
+        self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 4020)
 
         self.label_widget = tk.Label(root, bg="white", borderwidth=2, relief="solid")
-        self.label_widget.place(relx=0.6, rely=0.1, relwidth=0.3, relheight=0.7)
+        self.label_widget.place(relx=0.1, rely=0.1, relwidth=0.8, relheight=0.8)
 
-        self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.05, 0.1)
-        self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.05, 0.3)
-        self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.05, 0.5)
+        self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.01, 0.05)
+        self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.01, 0.1)
+        self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.01, 0.15)
 
         dropdown_var = tk.StringVar()
         dropdown_var.set("Configs")
 
+        # Read data from the JSON file
         with open('data.json') as json_file:
             loaded_data = json.load(json_file)["people"]
-        dropdown = [loaded_data[i]["name"] for i in range(4)]
+        dropdown_values = [loaded_data[0]["name"], loaded_data[1]["name"], loaded_data[2]["name"],
+                           loaded_data[3]["name"]]
 
-        dropdown_menu = OptionMenu(root, dropdown_var, *dropdown)
-        dropdown_menu.place(relx=0.05, rely=0.7)
+        self.dropdown = self.create_styled_combobox(dropdown_values, 0.05, 0.5)
+        self.dropdown.set("Configs")
+        self.dropdown.place(relx=0.05, rely=0.7, relwidth=0.15)
 
         self.is_playing = False
         self.update()
@@ -52,6 +57,19 @@ class GUI:
         canvas.tag_bind(btn_id, '<ButtonPress-1>', lambda event, c=cmd: c())
 
         return canvas
+
+    def create_styled_combobox(self, values, relx, rely):
+        combo_style = Style()
+        combo_style.theme_use('clam')
+        combo_style.configure("TCombobox",
+                              fieldbackground="white",
+                              background="white",
+                              foreground="black",
+                              padding=10,
+                              font=("Helvetica", 12))
+        combo = Combobox(self.root, values=values, style="TCombobox")
+        combo.place(relx=relx, rely=rely, relwidth=0.15)
+        return combo
 
     def start(self):
         if (not self.is_playing):
