@@ -12,7 +12,7 @@ port = 8833
 host = '192.168.137.212' 
 
 #servo pins
-servos = [14, 15, 18]
+servos = [Servo(14), Servo(15), Servo(18)]
 
 def Action0():
     print("0")
@@ -24,13 +24,12 @@ def Action2():
     print("2")
 
 def ServoInitialize():
-    for v in servos:
-        servo = Servo(v)
+    for servo in servos:
         servo.value = 0
 
 def ServoTester(pin):
     print(pin)
-    servo = Servo(pin)
+    servo = Servos(pin)
     servo.value = 1
     sleep(1)
     servo.value = 0
@@ -56,7 +55,7 @@ try:
             #    Action1()
             #if v == "2":
             #    Action2()
-            ServoTester(servos[int(v)])
+            ServoTester(int(v)) #v represents which servo
             v = clientsocket.recv(8).decode('utf-8')
 
         print("Client disconnected")
