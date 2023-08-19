@@ -11,6 +11,6 @@ print("Successfully connected to server")
 
 for i in range(3):
     sleep(3)
-    clientsocket.send(bytes(i))
+    s.send(bytes(i))
 
-clientsocket.send("end")
+s.send("end")
