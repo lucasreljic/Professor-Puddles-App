@@ -14,7 +14,7 @@ try:
     servo.value = -0.5
     sleep(2)
 
-    for i in range(5)
+    for i in range(5):
         servo.value = -1
         sleep(0.333)
         servo.value = -0.5
