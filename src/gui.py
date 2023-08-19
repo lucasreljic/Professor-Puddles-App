@@ -5,40 +5,44 @@ import json
 from main import main
 from PIL import Image, ImageTk
 from windows_toasts import Toast, WindowsToaster
+
+# Set up toaster for notifs
 toaster = WindowsToaster('Python')
 newToast = Toast()
 
+
 class GUI:
-    def __init__(self, root, video_source=0, img = None):
+
+    def __init__(self, root, video_source=0, img=None):
         self.root = root
-        self.root.title("Posture Corrector")#name
-        self.root.geometry("800x400")# initial window size
-        self.i  =0
+        self.root.title("Posture Corrector")
+        self.root.geometry("800x400")
+        self.i = 0
         style = Style()
-        style.theme_use("clam")# style of gui
-        
+        style.theme_use("clam")
+
         # Configure the style for the various widgets
         style.configure("TButton",
-                        background="black",  # Background color
-                        foreground="white",    # Text color
-                        padding=10,            # Padding around the text
+                        background="black",
+                        foreground="white",
+                        padding=10,
                         font=("Helvetica", 12, "bold"))
 
         style.configure("TLabel",
-                        foreground="#333",    # Text color
+                        foreground="#333",
                         font=("Helvetica", 14))
 
         style.configure("TEntry",
-                        fieldbackground="white",  # Background color of the entry field
+                        fieldbackground="white",
                         font=("Helvetica", 12))
 
         style.configure("TMenubutton",
-                        background="white",   # Background color
+                        background="white",
                         font=("Helvetica", 12))
         self.video_source = video_source
         self.vid = cv2.VideoCapture(self.video_source)
         self.detector = main()
-        width, height =  1080, 1920# Width of camera, #Height of Camera
+        width, height = 1080, 1920
         self.vid.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
@@ -49,26 +53,26 @@ class GUI:
 
         self.btn_stop = Button(root, text="Stop", width=10, command=self.stop)
         self.btn_stop.pack(padx=10, pady=5)
-        
-        self.btn_start = Button(root, text="Setup" ,width=10, command=self.setup)
+
+        self.btn_start = Button(root, text="Setup", width=10, command=self.setup)
         self.btn_start.pack(padx=10, pady=5)
         dropdown_var = tk.StringVar()
-        dropdown_var.set( "Configs" )
+        dropdown_var.set("Configs")
+
         # Read data from the JSON file
         with open('data.json') as json_file:
             loaded_data = json.load(json_file)["people"]
         dropdown = [loaded_data[0]["name"], loaded_data[1]["name"], loaded_data[2]["name"], loaded_data[3]["name"]]
-        
-        
+
         dropdown = OptionMenu(root, dropdown_var, *dropdown)
         dropdown.pack()
         self.label_widget.pack()
-        
+
         self.is_playing = False
         self.update()
 
     def start(self):
-        if(not self.is_playing):
+        if (not self.is_playing):
             self.is_playing = True
             self.update()
 
@@ -76,12 +80,13 @@ class GUI:
         self.is_playing = False
 
     def setup(self):
-        entry1 = tk.Entry(self.root) 
+        entry1 = tk.Entry(self.root)
         # canvas1.create_window(200, 140, window=entry1)
         # data
         # with open("data.json", "w") as json_file:
         #     json.dump(data, json_file, indent=4)
         self.setup = False
+
     def update(self):
         # Capture the video frame by frame
 
@@ -123,7 +128,7 @@ class GUI:
         if self.is_playing:
             # Convert image from one color space to other
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
-        
+
             # Capture the latest img and transform to image
             captured_image = Image.fromarray(opencv_image)
 
@@ -148,10 +153,10 @@ def gui():
     root = tk.Tk()
     root.bind('<Escape>', lambda e: app.quit())
     app = GUI(root)
-    #app.update(img)
+    # app.update(img)
 
     root.mainloop()
-    
-if __name__ == "__main__":	
+
+
+if __name__ == "__main__":
     gui()
-    
