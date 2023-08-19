@@ -18,7 +18,7 @@ while True:
     v = clientsocket.recv(8)
     while v != "end":
 
-        v = client.recv(8)
+        v = clientsocket.recv(8)
         if v == "1":
             Action1()
         if v == "2":
