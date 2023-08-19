@@ -4,7 +4,7 @@ from tkinter.ttk import Style, Combobox, OptionMenu, Button
 import cv2
 import json
 from PIL import Image, ImageTk
-from main import main, run  
+from pose_detector import main, run  
 
 
 LIGHT_MODE = {
