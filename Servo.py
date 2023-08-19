@@ -5,8 +5,8 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
 #servo pins
-minPW=0.0003
-maxPW=0.0027
+minPW=0.0002
+maxPW=0.0028
 
 
 
@@ -25,7 +25,7 @@ def Water():
         sleep(delay)
 
 def Bubbles():
-    default = -1
+    default = -0.7
     delay = 0.231
     servo.value = default
     sleep(2)
