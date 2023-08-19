@@ -1,22 +1,37 @@
-{"people": [{
-    "name": "Ryan Doe",
-    "age": 19,
-    "city": "New York"
+[{
+    "name": "Ryan",
+    "front_p_min": 75,
+    "front_p_max": 95,
+    "left_s_min": 310,
+    "left_s_max": 320,
+    "right_s_min": 40,
+    "right_s_max": 50
 },
 {
-    "name": "Sana Doe",
-    "age": 19,
-    "city": "New York"
+    "name": "Lucas",
+    "front_p_min": 75,
+    "front_p_max": 95,
+    "left_s_min": 310,
+    "left_s_max": 320,
+    "right_s_min": 40,
+    "right_s_max": 50
 },
 {
-    "name": "Grace Doe",
-    "age": 18,
-    "city": "New York"
+    "name": "Grace",
+    "front_p_min": 75,
+    "front_p_max": 95,
+    "left_s_min": 310,
+    "left_s_max": 320,
+    "right_s_min": 40,
+    "right_s_max": 50
 },
 {
-    "name": "Lucas Doe",
-    "age": 19,
-    "city": "New York"
+    "name": "Sana",
+    "front_p_min": 75,
+    "front_p_max": 95,
+    "left_s_min": 310,
+    "left_s_max": 320,
+    "right_s_min": 40,
+    "right_s_max": 50
 }
 ]
-}
