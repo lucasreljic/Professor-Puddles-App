@@ -1,9 +1,13 @@
 import socket
 
+port = 8833
+host = socket.gethostname()
+
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((socket.gethostname(), 1234))
+s.bind((host, port))
 s.listen(5)
 print("Socket initialized")
+print(host)
 
 while True:
     clientsocket, address = s.accept()
