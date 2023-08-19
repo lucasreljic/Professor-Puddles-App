@@ -19,7 +19,7 @@ class poseDetector():
                                 min_detection_confidence=self.detectionCon,
                                 min_tracking_confidence=self.trackCon)
 
-    def findPose(self, img, draw=True):
+    def find_pose(self, img, draw=True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.pose.process(imgRGB)
 
@@ -28,7 +28,7 @@ class poseDetector():
                 self.mpDraw.draw_landmarks(img, self.results.pose_landmarks, self.mpPose.POSE_CONNECTIONS)
         return img
 
-    def getPosition(self, img):
+    def get_position(self, img):
         self.lmList = []
         if self.results.pose_landmarks:
             for id, lm in enumerate(self.results.pose_landmarks.landmark):
@@ -45,7 +45,7 @@ class poseDetector():
     #     cv2.putText(img, str(int(fbs)), (70, 80), cv2.FONT_HERSHEY_PLAIN, 3,
     #                 (255, 0, 0), 3)
 
-    def findAngle(self, img, p1, p2, p3, draw=True):
+    def find_angle(self, img, p1, p2, p3, draw=True):
         # Get the landmark
         try:
             x1, y1 = self.lmList[p1][1:]
@@ -91,7 +91,7 @@ def main():
     #     print(detector.findAngle(img, 10, 11, 12))
     #     # detector.showFps(img)
     return detector
-        
+
 
 
 if __name__ == "__main__":

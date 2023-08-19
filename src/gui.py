@@ -4,13 +4,16 @@ import cv2
 import json
 from main import main
 from PIL import Image, ImageTk
+from windows_toasts import Toast, WindowsToaster
+toaster = WindowsToaster('Python')
+newToast = Toast()
 
 class GUI:
-    def __init__(self, root, video_source=0, frame = None):
+    def __init__(self, root, video_source=0, img = None):
         self.root = root
         self.root.title("Posture Corrector")#name
         self.root.geometry("800x400")# initial window size
-        
+        self.i  =0
         style = Style()
         style.theme_use("clam")# style of gui
         
@@ -82,19 +85,46 @@ class GUI:
     def update(self):
         # Capture the video frame by frame
 
-        _, frame = self.vid.read()
-        frame = self.detector.findPose(frame)
-        lmList = self.detector.getPosition(frame)
-        #print(lmList)
-        print(self.detector.findAngle(frame, 10, 11, 12))
-        # detector.showFps(frame)
-        opencv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+        _, img = self.vid.read()
+        self.i += 1
+
+        # Setup
+        img = self.detector.find_pose(img)
+        self.detector.get_position(img)  # DO NOT DELETE: this will give the landmark list
+
+        # Interested angle
+        # r_turn = self.detector.find_angle(img, 6, 8, 0)
+        # l_turn = self.detector.find_angle(img, 3, 7, 0)
+        front_posture = self.detector.find_angle(img, 11, 0, 12)
+        left_shoulder = self.detector.find_angle(img, 9, 11, 12)
+        right_shoulder = self.detector.find_angle(img, 10, 12, 11)
+
+        good_poster = True
+
+        # TODO: add an interator for good_posture so it only sends a notification if you slouch
+        #  for a certain amount of time
+
+        # TODO: right now the following measurements are for me. we need code to make it personalized
+        if front_posture < 75 \
+                or front_posture > 95 \
+                or left_shoulder < 310 or left_shoulder > 320 \
+                or right_shoulder < 40 or right_shoulder > 50:
+            good_poster = False
+        print(good_poster)
+
+        if not good_poster and self.i > 100:
+            newToast.text_fields = ['!']
+            newToast.on_activated = lambda _: print('Toast clicked!')
+            toaster.show_toast(newToast)
+            self.i = 0
+        # self.detector.showFps(frame)
+        opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
 
         if self.is_playing:
             # Convert image from one color space to other
-            opencv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+            opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
         
-            # Capture the latest frame and transform to image
+            # Capture the latest img and transform to image
             captured_image = Image.fromarray(opencv_image)
 
             # Convert captured image to photoimage
@@ -118,7 +148,7 @@ def gui():
     root = tk.Tk()
     root.bind('<Escape>', lambda e: app.quit())
     app = GUI(root)
-    #app.update(frame)
+    #app.update(img)
 
     root.mainloop()
     
