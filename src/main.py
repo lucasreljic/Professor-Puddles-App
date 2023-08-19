@@ -1,10 +1,10 @@
 import cv2
 import mediapipe as mp
 import math
+# import time
 from windows_toasts import Toast, WindowsToaster
 toaster = WindowsToaster('Python')
 newToast = Toast()
-import time
 
 
 class PoseDetector():
@@ -94,29 +94,39 @@ class PoseDetector():
 def main():
     detector = PoseDetector()
     cap = cv2.VideoCapture(0)
+    i = 0
 
     while True:
+        i += 1
+
         # Setup
         success, img = cap.read()
         img = detector.find_pose(img)
-        detector.get_position(img)  # this will give the landmark list extremely important***
+        detector.get_position(img)  # DO NOT DELETE: this will give the landmark list
 
         # Interested angles
         # r_turn = detector.find_angle(img, 6, 8, 0)
         # l_turn = detector.find_angle(img, 3, 7, 0)
-        # front_posture = detector.find_angle(img, 11, 0, 12)
+        front_posture = detector.find_angle(img, 11, 0, 12)
         left_shoulder = detector.find_angle(img, 9, 11, 12)
-        # right_shoulder = detector.find_angle(img, 10, 12, 11)
+        right_shoulder = detector.find_angle(img, 10, 12, 11)
 
-        # good_poster = True
-        # if front_posture < 75 or front_posture > 95:
-        #     good_poster = False
+        good_poster = True
 
-        time.sleep(10)
-        newToast.text_fields = ['!']
-        newToast.on_activated = lambda _: print('Toast clicked!')
-        toaster.show_toast(newToast)
-        print(312 < left_shoulder < 317)
+        if front_posture < 75 \
+                or front_posture > 95 \
+                or left_shoulder < 310 \
+                or left_shoulder > 320 \
+                or right_shoulder < 40 \
+                or right_shoulder > 50:
+            good_poster = False
+        print(good_poster)
+
+        if not good_poster and i > 100:
+            newToast.text_fields = ['!']
+            newToast.on_activated = lambda _: print('Toast clicked!')
+            toaster.show_toast(newToast)
+            i = 0
 
         cv2.imshow("Image", img)
         cv2.waitKey(1)
