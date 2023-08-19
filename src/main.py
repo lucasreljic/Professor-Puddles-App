@@ -69,7 +69,7 @@ class PoseDetector():
         # TODO: add the colours to indicate what is good and what is bad
         #  we prolly want to change the colours to red, orange, yellow, green using RGB.
         #  Should be gradient as well
-        
+
         if draw:
             cv2.line(img, (x1, y1), (x2, y2), (255, 255, 255), 3)
             cv2.line(img, (x3, y3), (x2, y2), (255, 255, 255), 3)
@@ -112,6 +112,7 @@ def main():
         # TODO: add an interator for good_posture so it only sends a notification if you slouch
         #  for a certain amount of time
 
+        # TODO: right now the following measurements are for me. we need code to make it personalized
         if front_posture < 75 \
                 or front_posture > 95 \
                 or left_shoulder < 310 or left_shoulder > 320 \
