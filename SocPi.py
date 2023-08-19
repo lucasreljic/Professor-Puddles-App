@@ -62,4 +62,4 @@ try:
         print("Client disconnected")
 
 finally:
-    #GPIO.cleanup()
+#GPIO.cleanup()
