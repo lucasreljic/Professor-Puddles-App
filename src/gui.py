@@ -6,6 +6,7 @@ import json
 from PIL import Image, ImageTk
 from main import main, run  
 
+
 LIGHT_MODE = {
     "bg": "white",
     "text": "black",
@@ -199,7 +200,3 @@ def gui():
     app = GUI(root)
 
     root.mainloop()
-
-
-if __name__ == "__main__":
-    gui()
