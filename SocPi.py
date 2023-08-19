@@ -55,7 +55,7 @@ while True:
         #    Action1()
         #if v == "2":
         #    Action2()
-        ServoTester[int(v)]
+        ServoTester(servos[int(v)])
         v = clientsocket.recv(8).decode('utf-8')
 
     print("Client disconnected")
