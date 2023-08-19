@@ -24,12 +24,13 @@ LIGHT_MODE = {
 DARK_MODE = {
     "bg": "black",
     "text": "white",
-    "btn": "#555555",
+    "btn": "#black",
     "btn_text": "white",
-    "dropdown_bg": "#333333",
+    "dropdown_bg": "white",
     "dropdown_text": "white",
     "highlight": "#666666"
 }
+
 
 class GUI:
 
@@ -50,10 +51,12 @@ class GUI:
 
         self.theme = LIGHT_MODE  # Start with light mode
 
-        self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.01, 0.15)
-        self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.01, 0.25)
-        self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.01, 0.35)
-        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", self.theme["btn"], self.toggle_theme, 0.01, 0.45)
+        self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.25)
+        self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.35)
+        self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.45)
+
+        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", self.theme["btn"], self.toggle_theme, 0.02, 0.45)
+        self.btn_theme_toggle.place(relx=0.04, rely=0.05, relwidth=0.15, relheight=0.08)
 
         dropdown_var = tk.StringVar()
         dropdown_var.set("Configs")
@@ -63,7 +66,8 @@ class GUI:
             loaded_data = json.load(json_file)["people"]
         dropdown_values = [loaded_data[0]["name"], loaded_data[1]["name"], loaded_data[2]["name"], loaded_data[3]["name"]]
 
-        self.dropdown = self.create_styled_combobox(dropdown_values, 0.05, 0.5)
+        self.dropdown = self.create_styled_combobox(dropdown_values, 0.15, 0.5)
+        self.dropdown.place(relx=0.01, rely=0.1, relwidth=0.1, relheight=0.05)
         self.dropdown.set("Configs")
 
         self.is_playing = False
@@ -94,9 +98,17 @@ class GUI:
 
     def create_rounded_button(self, text, color, cmd, relx, rely):
         canvas = Canvas(self.root, bg=self.theme["bg"], bd=0, highlightthickness=0, relief='ridge')
-        canvas.place(relx=relx, rely=rely, relwidth=0.15, relheight=0.1)
-        canvas.create_rectangle(10, 10, 10 + 150, 10 + 40, outline=color, fill=color, width=2)
-        btn_id = canvas.create_text(80, 30, text=text, fill=self.theme["btn_text"], font=("Helvetica", 12, "bold"))
+        canvas.place(relx=relx, rely=rely, relwidth=0.15,
+                     relheight=0.08)
+
+        # Using create_oval to make the button rounded
+        btn_shape = canvas.create_oval(10, 10, 10 + 150, 10 + 40, outline=color, fill=color, width=2)
+
+        btn_id = canvas.create_text(80, 25, text=text, fill=self.theme["btn_text"],
+                                    font=("Helvetica", 12))  # Removed "bold"
+
+        # Binding both the shape and the text to the button action
+        canvas.tag_bind(btn_shape, '<ButtonPress-1>', lambda event, c=cmd: c())
         canvas.tag_bind(btn_id, '<ButtonPress-1>', lambda event, c=cmd: c())
 
         return canvas
