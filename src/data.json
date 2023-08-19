@@ -1,0 +1,37 @@
+[{
+    "name": "Ryan",
+    "front_p_min": 75,
+    "front_p_max": 95,
+    "left_s_min": 310,
+    "left_s_max": 320,
+    "right_s_min": 40,
+    "right_s_max": 50
+},
+{
+    "name": "Lucas",
+    "front_p_min": 75,
+    "front_p_max": 95,
+    "left_s_min": 310,
+    "left_s_max": 320,
+    "right_s_min": 40,
+    "right_s_max": 50
+},
+{
+    "name": "Grace",
+    "front_p_min": 75,
+    "front_p_max": 95,
+    "left_s_min": 310,
+    "left_s_max": 320,
+    "right_s_min": 40,
+    "right_s_max": 50
+},
+{
+    "name": "Sana",
+    "front_p_min": 75,
+    "front_p_max": 95,
+    "left_s_min": 310,
+    "left_s_max": 320,
+    "right_s_min": 40,
+    "right_s_max": 50
+}
+]
