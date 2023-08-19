@@ -93,11 +93,23 @@ def main():
     cap = cv2.VideoCapture(0)
 
     while True:
+        # Setup
         success, img = cap.read()
         img = detector.find_pose(img)
         detector.get_position(img)  # this will give the landmark list extremely important***
 
-        print(detector.find_angle(img, 6, 8, 0))    # this will give the angle between the points
+        # Interested angles
+        # r_turn = detector.find_angle(img, 6, 8, 0)
+        # l_turn = detector.find_angle(img, 3, 7, 0)
+        front_posture = detector.find_angle(img, 11, 0, 12)
+        left_shoulder = detector.find_angle(img, 9, 11, 12)
+        right_shoulder = detector.find_angle(img, 10, 12, 11)
+
+        good_poster = True
+        if front_posture < 75 or front_posture > 95:
+            good_poster = False
+
+        print(good_poster)
 
         cv2.imshow("Image", img)
         cv2.waitKey(1)
