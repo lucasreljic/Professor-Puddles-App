@@ -1,7 +1,10 @@
 import cv2
 import mediapipe as mp
 import math
-# import time   needed iff we want to use fps
+from windows_toasts import Toast, WindowsToaster
+toaster = WindowsToaster('Python')
+newToast = Toast()
+import time
 
 
 class PoseDetector():
@@ -109,6 +112,10 @@ def main():
         # if front_posture < 75 or front_posture > 95:
         #     good_poster = False
 
+        time.sleep(10)
+        newToast.text_fields = ['!']
+        newToast.on_activated = lambda _: print('Toast clicked!')
+        toaster.show_toast(newToast)
         print(312 < left_shoulder < 317)
 
         cv2.imshow("Image", img)
