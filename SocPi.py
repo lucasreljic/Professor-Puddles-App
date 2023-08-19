@@ -5,6 +5,8 @@ from gpiozero import Servo
 from time import sleep
 import RPi.GPIO as GPIO  
 
+GPIO.setmode(GPIO.BCM)
+
 #socket params
 port = 8833
 host = '192.168.137.212' 
