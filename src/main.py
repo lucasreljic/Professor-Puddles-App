@@ -100,7 +100,7 @@ def main():
         img = detector.find_pose(img)
         detector.get_position(img)  # DO NOT DELETE: this will give the landmark list
 
-        # Interested angles
+        # Interested angle
         # r_turn = detector.find_angle(img, 6, 8, 0)
         # l_turn = detector.find_angle(img, 3, 7, 0)
         front_posture = detector.find_angle(img, 11, 0, 12)
