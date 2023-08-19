@@ -114,7 +114,6 @@ def run(img, i, detector, data, dropdown):
 
     # TODO: add an interator for good_posture so it only sends a notification if you slouch
     #  for a certain amount of time
-    print(dropdown)
     # TODO: right now the following measurements are for me. we need code to make it personalized
     if front_posture < data[dropdown]["front_p_min"] \
             or front_posture >  data[dropdown]["front_p_max"] \

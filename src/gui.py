@@ -1,15 +1,10 @@
 import tkinter as tk
 from tkinter import Canvas
-from tkinter.ttk import Style, Combobox
+from tkinter.ttk import Style, Combobox, OptionMenu, Button
 import cv2
 import json
-from main import main, run  
 from PIL import Image, ImageTk
-from windows_toasts import Toast, WindowsToaster
-
-# Set up toaster for notifs
-toaster = WindowsToaster('Python')
-newToast = Toast()
+from main import main, run  
 
 LIGHT_MODE = {
     "bg": "white",
@@ -52,38 +47,24 @@ class GUI:
 
         self.theme = LIGHT_MODE  # Start with light mode
 
-        # Read data from the JSON file
-        with open('data.json') as json_file:
-            loaded_data = json.load(json_file)["people"]
-        dropdown_values = [loaded_data[0]["name"], loaded_data[1]["name"], loaded_data[2]["name"], loaded_data[3]["name"]]
-
-        self.btn_stop = Button(root, text="Stop", width=10, command=self.stop)
-        self.btn_stop.pack(padx=10, pady=5)
-        
-        self.btn_start = Button(root, text="Setup" ,width=10, command=self.setup)
-        self.btn_start.pack(padx=10, pady=5)
-        dropdown_var = tk.StringVar()
-        dropdown_var.set("Configs")
 
         # Read data from the JSON file
         self.firstRun = True
         self.integer = 0
+        self.i = 0
         with open('data.json') as json_file:
             self.loaded_data = json.load(json_file)
-        dropdown = [self.loaded_data[0]["name"],self.loaded_data[0]["name"], self.loaded_data[1]["name"], self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
+        self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"], self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
         
+  
         self.dropdown_var = tk.StringVar()
         self.dropdown_var.set(self.loaded_data[0]["name"])
-        dropdown = OptionMenu(root, self.dropdown_var, *dropdown)
-        print(self.dropdown_var.get())
-        dropdown.pack()
-        self.label_widget.pack()
+        
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
-        self.dropdown = self.create_styled_combobox(dropdown_values, 0.02, 0.05)
+        self.dropdown = self.create_styled_combobox(0.02, 0.05)
         self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.4)
         self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.5)
         self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.8)
-
         self.is_playing = False
         self.update()
 
@@ -154,7 +135,7 @@ class GUI:
 
         return canvas
 
-    def create_styled_combobox(self, values, relx, rely):
+    def create_styled_combobox(self, relx, rely):
         combo_style = Style()
         combo_style.theme_use('clam')
         combo_style.configure("TCombobox",
@@ -163,7 +144,7 @@ class GUI:
                               foreground=self.theme["dropdown_text"],
                               padding=10,
                               font=("Helvetica", 12))
-        combo = Combobox(self.root, values=values, style="TCombobox")
+        combo = OptionMenu(self.root, self.dropdown_var, *self.dropdown)
         combo.place(relx=relx, rely=rely, relwidth=0.12)
         return combo
 
