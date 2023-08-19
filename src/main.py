@@ -53,10 +53,10 @@ class poseDetector():
             x2, y2 = self.lmList[p2][1:]
             x3, y3 = self.lmList[p3][1:]
         except:
-            x1 = 0 
+            x1 = 0
             y1 = 0
-            x2 = 0 
-            y2 = 0 
+            x2 = 0
+            y2 = 0
             x3 = 0
             y3 = 0
             print("out of bounds")
@@ -87,9 +87,9 @@ def main():
     while True:
         success, img = cap.read()
         img = detector.findPose(img)
-        lmList = detector.getPosition(img)
+        detector.getPosition(img)   # this will give the landmark list extremely important***
         #print(lmList)
-        print(detector.findAngle(img, 10, 11, 12))
+        print(detector.findAngle(img, 6, 8, 0))
         # detector.showFps(img)
         cv2.imshow("Image", img)
         cv2.waitKey(1)
