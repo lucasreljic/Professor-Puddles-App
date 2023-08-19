@@ -56,15 +56,10 @@ try:
             #    Action1()
             #if v == "2":
             #    Action2()
-            try:
-                n = int(v)
-                print(n)
-            except:
-                print("Non int recieved")
             ServoTester[int(v)]
             v = clientsocket.recv(8).decode('utf-8')
 
         print("Client disconnected")
 
 finally:
-    GPIO.cleanup()
+    #GPIO.cleanup()
