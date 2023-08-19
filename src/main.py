@@ -66,6 +66,10 @@ class PoseDetector():
             angle += 360
 
         # Draw the angle lines
+        # TODO: add the colours to indicate what is good and what is bad
+        #  we prolly want to change the colours to red, orange, yellow, green using RGB.
+        #  Should be gradient as well
+        
         if draw:
             cv2.line(img, (x1, y1), (x2, y2), (255, 255, 255), 3)
             cv2.line(img, (x3, y3), (x2, y2), (255, 255, 255), 3)
@@ -105,12 +109,13 @@ def main():
 
         good_poster = True
 
+        # TODO: add an interator for good_posture so it only sends a notification if you slouch
+        #  for a certain amount of time
+
         if front_posture < 75 \
                 or front_posture > 95 \
-                or left_shoulder < 310 \
-                or left_shoulder > 320 \
-                or right_shoulder < 40 \
-                or right_shoulder > 50:
+                or left_shoulder < 310 or left_shoulder > 320 \
+                or right_shoulder < 40 or right_shoulder > 50:
             good_poster = False
         print(good_poster)
 
