@@ -27,7 +27,7 @@ class GUI:
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 4020)
 
         self.label_widget = tk.Label(root, bg="white", borderwidth=2, relief="solid")
-        self.label_widget.place(relx=0.3, rely=0.1, relwidth=0.8, relheight=0.8)
+        self.label_widget.place(relx=0.15, rely=0.05, relwidth=0.8, relheight=0.8)
 
         self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.01, 0.05)
         self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.01, 0.1)
@@ -44,7 +44,7 @@ class GUI:
 
         self.dropdown = self.create_styled_combobox(dropdown_values, 0.05, 0.5)
         self.dropdown.set("Configs")
-        self.dropdown.place(relx=0.01, rely=0.25, relwidth=0.15)
+        self.dropdown.place(relx=0.013, rely=0.25, relwidth=0.1)
 
         self.is_playing = False
         self.update()
