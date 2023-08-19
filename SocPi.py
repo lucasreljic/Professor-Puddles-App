@@ -26,14 +26,13 @@ while True:
 
     v = clientsocket.recv(8).decode('utf-8')
     while v != "end":
-
-        v = clientsocket.recv(8).decode('utf-8')
         if v == "1":
             Action1()
         if v == "2":
             Action2()
         if v == "3":
             Action3()
+        v = clientsocket.recv(8).decode('utf-8')
 
     print("Client disconnected")
 
