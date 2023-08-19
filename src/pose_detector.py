@@ -3,7 +3,7 @@ import mediapipe as mp
 import math
 
 
-class poseDetector():
+class PoseDetector():
     def __init__(self, mode=False, smooth=True, detectionCon=0.5, trackCon=0.5):
         self.mode = mode
         self.smooth = smooth
@@ -13,14 +13,12 @@ class poseDetector():
 
         self.mpDraw = mp.solutions.drawing_utils
         self.mpPose = mp.solutions.pose
-        self.pose = self.mpPose.Pose(static_image_mode=self.mode,
-                                smooth_landmarks=self.smooth,
-                                min_detection_confidence=self.detectionCon,
-                                min_tracking_confidence=self.trackCon)
+        self.pose = self.mpPose.Pose(static_image_mode=self.mode, smooth_landmarks=self.smooth,
+                                     min_detection_confidence=self.detectionCon, min_tracking_confidence=self.trackCon)
 
     def find_pose(self, img, draw=True):
-        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        self.results = self.pose.process(imgRGB)
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        self.results = self.pose.process(img_rgb)
 
         if self.results.pose_landmarks:
             if draw:
@@ -80,7 +78,7 @@ class poseDetector():
 
 
 def main():
-    detector = poseDetector()
+    detector = PoseDetector()
     #cap = cv2.VideoCapture(0)
     # while True:
     #     success, img = cap.read()
