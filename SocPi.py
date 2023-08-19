@@ -3,6 +3,7 @@ from http import client
 import socket
 from gpiozero import Servo
 from time import sleep
+import RPi.GPIO as GPIO  
 
 #socket params
 port = 8833
@@ -26,6 +27,7 @@ def ServoInitialize():
         servo.value = 0
 
 def ServoTester(pin):
+    print(pin)
     servo = Servo(pin)
     servo.value = 1
     sleep(1)
