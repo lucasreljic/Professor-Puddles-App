@@ -30,7 +30,6 @@ def Action2():
 
 def ServoInitialize():
     for servo in servos:
-        GPIO.setup(servo_pin,GPIO.OUT)
         servo.value = 0
 
 def ServoTester(pin):
