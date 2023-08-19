@@ -57,9 +57,11 @@ try:
             #if v == "2":
             #    Action2()
             try:
-                ServoTester[int(v)]
+                n = int(v)
+                print(n)
             except:
                 print("Non int recieved")
+            ServoTester[int(v)]
             v = clientsocket.recv(8).decode('utf-8')
 
         print("Client disconnected")
