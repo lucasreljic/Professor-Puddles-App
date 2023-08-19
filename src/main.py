@@ -1,7 +1,7 @@
 import cv2
 import mediapipe as mp
 import math
-# import time
+# import time   needed iff we want to use fps
 
 
 class PoseDetector():
@@ -32,11 +32,13 @@ class PoseDetector():
 
     def get_position(self, img):
         self.lmList = []
+
         if self.results.pose_landmarks:
             for id, lm in enumerate(self.results.pose_landmarks.landmark):
                 h, w, c = img.shape
                 cx, cy = int(lm.x * w), int(lm.y * h)
                 self.lmList.append([id, cx, cy])
+
         return self.lmList
 
     # def showFps(self, img):
@@ -48,11 +50,11 @@ class PoseDetector():
     #                 (255, 0, 0), 3)
 
     def find_angle(self, img, p1, p2, p3, draw=True):
-
         try:
             x1, y1 = self.lmList[p1][1:]
             x2, y2 = self.lmList[p2][1:]
             x3, y3 = self.lmList[p3][1:]
+
         except:
             x1 = 0
             y1 = 0
@@ -62,14 +64,13 @@ class PoseDetector():
             y3 = 0
             print("out of bounds")  # TODO: don't need print
 
-        # Calculate the angle
         angle = math.degrees(math.atan2(y3 - y2, x3 - x2) - math.atan2(y1 - y2, x1 - x2))
 
         # some time this angle comes zero, so below condition we added
         if angle < 0:
             angle += 360
 
-        # Draw
+        # Draw the angle lines
         if draw:
             cv2.line(img, (x1, y1), (x2, y2), (255, 255, 255), 3)
             cv2.line(img, (x3, y3), (x2, y2), (255, 255, 255), 3)
@@ -79,21 +80,25 @@ class PoseDetector():
             cv2.circle(img, (x2, y2), 15, (0, 0, 255), 1)
             cv2.circle(img, (x3, y3), 10, (0, 0, 255), cv2.FILLED)
             cv2.circle(img, (x3, y3), 15, (0, 0, 255), 1)
+
+            # Extra feature to add the angle onto the image screen directly
             # cv2.putText(img, str(int(angle)), (x2 - 20, y2 + 50), cv2.FONT_HERSHEY_SIMPLEX,
             #             1, (0, 0, 255), 2)
+
         return angle
 
 
 def main():
     detector = PoseDetector()
     cap = cv2.VideoCapture(0)
+
     while True:
         success, img = cap.read()
         img = detector.find_pose(img)
-        detector.get_position(img)   # this will give the landmark list extremely important***
-        # print(lmList)
-        print(detector.find_angle(img, 6, 8, 0))
-        # detector.showFps(img)
+        detector.get_position(img)  # this will give the landmark list extremely important***
+
+        print(detector.find_angle(img, 6, 8, 0))    # this will give the angle between the points
+
         cv2.imshow("Image", img)
         cv2.waitKey(1)
 
