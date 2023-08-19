@@ -11,6 +11,6 @@ print("Successfully connected to server")
 
 for i in range(3):
     sleep(3)
-    s.send(bytes(i))
+    s.send(bytes(str(i).encode('utf-8')))
 
-s.send(bytes("end"))
+s.send(bytes("end".encode('utf-8')))

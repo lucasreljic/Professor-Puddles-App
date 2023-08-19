@@ -24,10 +24,10 @@ while True:
     clientsocket, address = s.accept()
     print(f"Connection from {address} has been established.")
 
-    v = clientsocket.recv(8)
+    v = clientsocket.recv(8).decode('utf-8')
     while v != "end":
 
-        v = clientsocket.recv(8)
+        v = clientsocket.recv(8).decode('utf-8')
         if v == "1":
             Action1()
         if v == "2":
