@@ -3,7 +3,7 @@ from tkinter import Canvas
 from tkinter.ttk import Style, Combobox
 import cv2
 import json
-from main import main
+from pose_detector import main
 from PIL import Image, ImageTk
 from windows_toasts import Toast, WindowsToaster
 
