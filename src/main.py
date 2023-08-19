@@ -44,14 +44,6 @@ class PoseDetector():
 
         return self.lmList
 
-    # def showFps(self, img):
-    #     cTime = time.time()
-    #     print(cTime, self.pTime)
-    #     fbs = 1 / (cTime - self.pTime)
-    #     self.pTime = cTime
-    #     cv2.putText(img, str(int(fbs)), (70, 80), cv2.FONT_HERSHEY_PLAIN, 3,
-    #                 (255, 0, 0), 3)
-
     def find_angle(self, img, p1, p2, p3, draw=True):
         try:
             x1, y1 = self.lmList[p1][1:]
