@@ -1,13 +1,11 @@
 import tkinter as tk
 from tkinter import Canvas
-from tkinter.ttk import Style, Combobox
+from tkinter.ttk import Style, Combobox, OptionMenu, Button
 import cv2
 import json
-from pose_detector import main
 from PIL import Image, ImageTk
-from windows_toasts import Toast, WindowsToaster
-toaster = WindowsToaster('Python')
-newToast = Toast()
+from main import main, run  
+
 
 LIGHT_MODE = {
     "bg": "white",
@@ -50,25 +48,24 @@ class GUI:
 
         self.theme = LIGHT_MODE  # Start with light mode
 
-        # Read data from the JSON file
-        with open('data.json') as json_file:
-            loaded_data = json.load(json_file)["people"]
-        dropdown_values = [loaded_data[0]["name"], loaded_data[1]["name"], loaded_data[2]["name"], loaded_data[3]["name"]]
-
-        dropdown_var = tk.StringVar()
-        dropdown_var.set("Configs")
 
         # Read data from the JSON file
+        self.firstRun = True
+        self.integer = 0
+        self.i = 0
         with open('data.json') as json_file:
-            loaded_data = json.load(json_file)["people"]
-        dropdown_values = [loaded_data[0]["name"], loaded_data[1]["name"], loaded_data[2]["name"], loaded_data[3]["name"]]
-
+            self.loaded_data = json.load(json_file)
+        self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"], self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
+        
+  
+        self.dropdown_var = tk.StringVar()
+        self.dropdown_var.set(self.loaded_data[0]["name"])
+        
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
-        self.dropdown = self.create_styled_combobox(dropdown_values, 0.02, 0.05)
+        self.dropdown = self.create_styled_combobox(0.02, 0.05)
         self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.4)
         self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.5)
         self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.8)
-
         self.is_playing = False
         self.update()
 
@@ -139,7 +136,7 @@ class GUI:
 
         return canvas
 
-    def create_styled_combobox(self, values, relx, rely):
+    def create_styled_combobox(self, relx, rely):
         combo_style = Style()
         combo_style.theme_use('clam')
         combo_style.configure("TCombobox",
@@ -148,20 +145,22 @@ class GUI:
                               foreground=self.theme["dropdown_text"],
                               padding=10,
                               font=("Helvetica", 12))
-        combo = Combobox(self.root, values=values, style="TCombobox")
+        combo = OptionMenu(self.root, self.dropdown_var, *self.dropdown)
         combo.place(relx=relx, rely=rely, relwidth=0.12)
         return combo
 
     def start(self):
         if not self.is_playing:
             self.is_playing = True
+            self.firstRun = True
             self.update()
 
     def stop(self):
         self.is_playing = False
 
     def setup(self):
-        entry1 = tk.Entry(self.root)
+        self.firstRun = True
+        entry1 = tk.Entry(self.root) 
         # canvas1.create_window(200, 140, window=entry1)
         # data
         # with open("data.json", "w") as json_file:
@@ -170,34 +169,17 @@ class GUI:
 
     def update(self):
         # Capture the video frame by frame
-
+        if self.firstRun:
+            for index, record in enumerate(self.loaded_data):
+                if record["name"] == str(self.dropdown_var.get()):
+                    self.integer = index
+                    self.firstRun = False
         _, img = self.vid.read()
-
-        # Setup
-        img = self.detector.find_pose(img)
-        self.detector.get_position(img)  # DO NOT DELETE: this will give the landmark list
-
-        # Interested angle
-        front_posture = self.detector.find_angle(img, 11, 0, 12)
-        left_shoulder = self.detector.find_angle(img, 9, 11, 12)
-        right_shoulder = self.detector.find_angle(img, 10, 12, 11)
-
-        good_poster = True
-
-        if front_posture < 75 \
-                or front_posture > 95 \
-                or left_shoulder < 310 or left_shoulder > 320 \
-                or right_shoulder < 40 or right_shoulder > 50:
-            good_poster = False
-        print(good_poster)
-
-        if not good_poster:
-            newToast.text_fields = ['!']
-            newToast.on_activated = lambda _: print('Toast clicked!')
-            toaster.show_toast(newToast)
-        # self.detector.showFps(frame)
+        img = run(img, self.i, self.detector, self.loaded_data, self.integer)
         opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
 
+
+        # needs to be here cannot be in backend
         if self.is_playing:
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
