@@ -1,7 +1,7 @@
 from argparse import Action
 from http import client
 import socket
-from gpiozero import Servo
+from gpiozero import AngularServo
 from time import sleep
 import RPi.GPIO as GPIO  
 
@@ -12,7 +12,12 @@ port = 8833
 host = '192.168.137.212' 
 
 #servo pins
-servos = [Servo(14), Servo(15), Servo(18)]
+minPW=0.001
+maxPW=0.002
+
+servos = [AngularServo(14,min_pulse_width=minPW,max_pulse_width=maxPW), 
+          AngularServo(15,min_pulse_width=minPW,max_pulse_width=maxPW),
+         AngularServo(18,min_pulse_width=minPW,max_pulse_width=maxPW)]
 
 def Action0():
     print("0")
@@ -25,6 +30,7 @@ def Action2():
 
 def ServoInitialize():
     for servo in servos:
+        GPIO.setup(servo_pin,GPIO.OUT)
         servo.value = 0
 
 def ServoTester(pin):
