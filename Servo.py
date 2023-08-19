@@ -25,7 +25,7 @@ def Water():
         sleep(delay)
 
 def Bubbles():
-    default = 0
+    default = -1
     delay = 0.231
     servo.value = default
     sleep(2)
