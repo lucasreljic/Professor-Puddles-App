@@ -6,8 +6,6 @@ import json
 from pose_detector import main
 from PIL import Image, ImageTk
 from windows_toasts import Toast, WindowsToaster
-
-# Set up toaster for notifs
 toaster = WindowsToaster('Python')
 newToast = Toast()
 
@@ -220,7 +218,3 @@ def gui():
     app = GUI(root)
 
     root.mainloop()
-
-
-if __name__ == "__main__":
-    gui()
