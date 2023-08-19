@@ -1,0 +1,22 @@
+{"people": [{
+    "name": "Ryan Doe",
+    "age": 19,
+    "city": "New York"
+},
+{
+    "name": "Sana Doe",
+    "age": 19,
+    "city": "New York"
+},
+{
+    "name": "Grace Doe",
+    "age": 18,
+    "city": "New York"
+},
+{
+    "name": "Lucas Doe",
+    "age": 19,
+    "city": "New York"
+}
+]
+}
