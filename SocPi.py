@@ -1,7 +1,8 @@
+from argparse import Action
 import socket
 
 port = 8833
-host = '192.168.137.212' #socket.gethostname()
+host = '192.168.137.212' 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((host, port))
@@ -13,4 +14,24 @@ while True:
     clientsocket, address = s.accept()
     print(f"Connection from {address} has been established.")
 
+    v = s.recv(8)
+    while v != "end":
 
+        v = s.recv(8)
+        if v == "1":
+            Action1()
+        if v == "2":
+            Action2()
+        if v == "3":
+            Action3()
+
+    print("Client disconnected")
+
+def Action1():
+    print("1")
+
+def Action2():
+    print("2")
+
+def Action3():
+    print("3")
