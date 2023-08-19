@@ -1,11 +1,12 @@
-
 import cv2
 import mediapipe as mp
-import time
 import math
+# import time
 
 
-class poseDetector():
+class PoseDetector():
+    """ This class is used to detect the pose of the body and also to get the landmark of the body. """
+
     def __init__(self, mode=False, smooth=True, detectionCon=0.5, trackCon=0.5):
         self.mode = mode
         self.smooth = smooth
@@ -16,11 +17,11 @@ class poseDetector():
         self.mpDraw = mp.solutions.drawing_utils
         self.mpPose = mp.solutions.pose
         self.pose = self.mpPose.Pose(static_image_mode=self.mode,
-                                smooth_landmarks=self.smooth,
-                                min_detection_confidence=self.detectionCon,
-                                min_tracking_confidence=self.trackCon)
+                                     smooth_landmarks=self.smooth,
+                                     min_detection_confidence=self.detectionCon,
+                                     min_tracking_confidence=self.trackCon)
 
-    def findPose(self, img, draw=True):
+    def find_pose(self, img, draw=True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.pose.process(imgRGB)
 
@@ -82,13 +83,13 @@ class poseDetector():
 
 
 def main():
-    detector = poseDetector()
+    detector = PoseDetector()
     cap = cv2.VideoCapture(0)
     while True:
         success, img = cap.read()
-        img = detector.findPose(img)
+        img = detector.find_pose(img)
         detector.getPosition(img)   # this will give the landmark list extremely important***
-        #print(lmList)
+        # print(lmList)
         print(detector.findAngle(img, 6, 8, 0))
         # detector.showFps(img)
         cv2.imshow("Image", img)
@@ -97,4 +98,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
