@@ -5,8 +5,8 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
 #servo pins
-minPW=0.0002
-maxPW=0.0028
+minPW=0.0001
+maxPW=0.0023
 
 
 
