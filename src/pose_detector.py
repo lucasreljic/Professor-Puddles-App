@@ -6,6 +6,7 @@ from windows_toasts import Toast, WindowsToaster
 toaster = WindowsToaster('Python')
 newToast = Toast()
 
+
 class PoseDetector():
     def __init__(self, mode=False, smooth=True, detectionCon=0.5, trackCon=0.5):
         self.mode = mode
@@ -111,6 +112,8 @@ def run(img, i, detector, data, dropdown):
         toaster.show_toast(newToast)
         i = 0
     return img
+
+
 def main():
     detector = PoseDetector()
     #cap = cv2.VideoCapture(0)
@@ -124,7 +127,5 @@ def main():
     return detector
 
 
-
 if __name__ == "__main__":
     main()
-    

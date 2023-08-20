@@ -1,11 +1,10 @@
 import tkinter as tk
 from tkinter import Canvas
-from tkinter.ttk import Style, Combobox, OptionMenu, Button
+from tkinter.ttk import Style, OptionMenu
 import cv2
 import json
 from PIL import Image, ImageTk
-from pose_detector import main, run  
-
+from src.pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -28,9 +27,9 @@ DARK_MODE = {
 }
 
 
-class GUI:
+class SideGUI:
 
-    def __init__(self, root, video_source=0):
+    def __init__(self, root, video_source=1):
         self.root = root
         self.root.title("Posture Corrector")
         self.root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
@@ -48,19 +47,18 @@ class GUI:
 
         self.theme = LIGHT_MODE  # Start with light mode
 
-
         # Read data from the JSON file
         self.firstRun = True
         self.integer = 0
         self.i = 0
-        with open('data.json') as json_file:
+        with open('side_data.json') as json_file:
             self.loaded_data = json.load(json_file)
-        self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"], self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
-        
-  
+        self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"],
+                         self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
+
         self.dropdown_var = tk.StringVar()
         self.dropdown_var.set(self.loaded_data[0]["name"])
-        
+
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
         self.dropdown = self.create_styled_combobox(0.02, 0.05)
         self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.4)
@@ -160,10 +158,10 @@ class GUI:
 
     def setup(self):
         self.firstRun = True
-        entry1 = tk.Entry(self.root) 
+        entry1 = tk.Entry(self.root)
         # canvas1.create_window(200, 140, window=entry1)
         # data
-        # with open("data.json", "w") as json_file:
+        # with open("front_data.json", "w") as json_file:
         #     json.dump(data, json_file, indent=4)
         self.setup = False
 
@@ -175,9 +173,9 @@ class GUI:
                     self.integer = index
                     self.firstRun = False
         _, img = self.vid.read()
+        img = cv2.rotate(img, cv2.ROTATE_180)
         img = run(img, self.i, self.detector, self.loaded_data, self.integer)
         opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
-
 
         # needs to be here cannot be in backend
         if self.is_playing:
@@ -193,10 +191,14 @@ class GUI:
             self.vid.release()
 
 
-def gui():
+def side_gui():
     root = tk.Tk()
     root.configure(bg="black")
     root.bind('<Escape>', lambda e: root.quit())
-    app = GUI(root)
+    app = SideGUI(root)
 
     root.mainloop()
+
+
+if __name__ == "__main__":
+    side_gui()
