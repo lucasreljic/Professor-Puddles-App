@@ -264,6 +264,9 @@ class FrontGUI:
 
 def front_gui(pi_port):
     root = tk.Tk()
+    ico = Image.open('duck.png')
+    photo = ImageTk.PhotoImage(ico)
+    root.wm_iconphoto(False, photo)
     root.configure(bg="black")
     root.bind('<Escape>', lambda e: root.quit())
     app = FrontGUI(root, pi_port= pi_port)

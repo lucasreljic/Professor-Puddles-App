@@ -104,9 +104,18 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 
 
             good_poster = False
 
-        if good_poster:
+        if good_poster and 5 < (time.time() - timer) < 11:
             if i > 0:
                 i -=2
+            timer = time.time()
+            print("countdown terminated")
+            try:
+                pi_port.send(bytes(str(3).encode('utf-8')))
+            except:
+                print("could not tell duck")
+        elif good_poster:
+            if i > 0:
+                    i -=2
             timer = time.time()
         print(good_poster)
         print(i)
@@ -114,34 +123,39 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 
         if not good_poster and i < 52 and i > 50:
             print("first warning")
             newToast.text_fields = ['Sit up straight!']
-            newToast.on_activated = lambda _: print('Acknowledged')
             toaster.show_toast(newToast)
             try:
                 pi_port.send(bytes(str(0).encode('utf-8')))
             except:
                 print("could not tell duck")
-        elif i < 90 and i > 88:
-            timer = time.time()
+        if  not good_poster and i < 82 and i > 80:
             print("second warning")
             frequency = 2500  # Set Frequency To 2500 Hertz
-            duration = 1000  # Set Duration To 1000 ms == 1 second
+            duration = 800  # Set Duration To 1000 ms == 1 second
             winsound.Beep(frequency, duration)
             time.sleep(0.01)
             newToast.text_fields = ['Sit up straight I mean it!']
-            newToast.on_activated = lambda _: print('Acknowledged!')
             toaster.show_toast(newToast)
             try:
                 pi_port.send(bytes(str(1).encode('utf-8')))
             except:
                 print("could not tell duck")
-        elif time.time() - timer > 15:
-            #kill computer
-            print("die time")
-            newToast.text_fields = ["You're gonna die now!"]
-            newToast.on_activated = lambda _: print('You missed your chance!')
+        elif not good_poster and i < 120 and i > 118:
+            timer = time.time()
+            print("third warning")
+            newToast.text_fields = ["Countdown Beginning!"]
             toaster.show_toast(newToast)
             try:
                 pi_port.send(bytes(str(2).encode('utf-8')))
+            except:
+                print("could not tell duck")
+        elif not good_poster and time.time() - timer > 11:
+            #kill computer
+            print("countdown completed")
+            newToast.text_fields = ["Countdown Ends, now face the consequences!"]
+            toaster.show_toast(newToast)
+            try:
+                pi_port.send(bytes(str(4).encode('utf-8')))
             except:
                 print("could not tell duck")
             time.sleep(0.1)
