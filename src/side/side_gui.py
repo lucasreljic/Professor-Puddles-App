@@ -5,7 +5,7 @@ import cv2
 import json
 import time
 from PIL import Image, ImageTk
-from side.side_pose_detector import main, run
+from src.side.side_pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -150,6 +150,7 @@ class SideGUI:
         combo = OptionMenu(self.root, self.dropdown_var, *self.dropdown)
         combo.place(relx=relx, rely=rely, relwidth=0.12)
         return combo
+
     def create_styled_textbox(self, relx, rely, color):
         canvas = Canvas(self.root, bg=color, bd=0, highlightthickness=0, relief='ridge')
         canvas.place(relx=relx, rely=rely, relwidth=0.11, relheight=0.08)
@@ -160,6 +161,7 @@ class SideGUI:
         btn_id = canvas.create_window(relx, rely, window=entry1)
 
         return canvas, entry1
+
     def start(self):
         if not self.is_playing:
             self.is_playing = True
@@ -168,10 +170,12 @@ class SideGUI:
 
     def stop(self):
         self.is_playing = False
+
     def show_popup(self):
         self.inSetup = False
         messagebox.showinfo("Config", "Submitted!")
         self.savetoJson()
+
     def savetoJson(self):
         self.entered_data["name"] = self.name.get()
         self.entered_data["x0"] /= self.frames 
@@ -195,6 +199,7 @@ class SideGUI:
         self.loaded_data.append(self.entered_data)
         with open('side_data.json', 'w') as json_file:
             json.dump(self.loaded_data, json_file, indent=4, separators=(',',':'))
+
     def setupRun(self):
         _, img = self.vid.read()
         self.frames+=1
@@ -212,6 +217,7 @@ class SideGUI:
             self.label_widget.after(10, self.setupRun)
         else:
             return
+
     def setup(self):
         self.entered_data = {}
         self.time = time.time()
@@ -243,6 +249,7 @@ class SideGUI:
         # with open("front_data.json", "w") as json_file:
         #     json.dump(data, json_file, indent=4)
         #self.setupRun = False
+
     def update(self):
         # Capture the video frame by frame
         if self.firstRun:
@@ -255,7 +262,7 @@ class SideGUI:
         if self.is_playing:
             _, img = self.vid.read()
             img = cv2.rotate(img, cv2.ROTATE_180)
-            img, self.time, self.i = run(img, self.i, self.detector, self.loaded_data, self.integer)
+            img, self.time, self.i = run(img, self.i, self.detector, self.loaded_data, self.integer, False, timer=self.time)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
