@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import Canvas
-from tkinter.ttk import Style, Combobox, OptionMenu, Button
+from tkinter.ttk import Style, OptionMenu
 import cv2
 import json
 from PIL import Image, ImageTk
@@ -173,6 +173,7 @@ class SideGUI:
                     self.integer = index
                     self.firstRun = False
         _, img = self.vid.read()
+        img = cv2.rotate(img, cv2.ROTATE_180)
         img = run(img, self.i, self.detector, self.loaded_data, self.integer)
         opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
 
@@ -197,6 +198,7 @@ def side_gui():
     app = SideGUI(root)
 
     root.mainloop()
+
 
 if __name__ == "__main__":
     side_gui()
