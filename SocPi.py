@@ -21,13 +21,14 @@ servo = AngularServo(18,min_pulse_width=minPW,max_pulse_width=maxPW)
 default = -0.5
 delay = 0.333
 servo.value = default
-pygame.mixer.init()
+pygame.mixer.init(44100)
 
 def play_mp3(file_path):
     pygame.mixer.music.load(file_path)
     pygame.mixer.music.play()
 
 def Water():
+    pygame.mixer.init(44100)
     play_mp3("Quack.mp3")
     for i in range(5):
         servo.value = -1
@@ -50,17 +51,21 @@ try:
         while v != "end":
             if v == "0":
                 print("Recieved 0")
+                pygame.mixer.init(44100)
                 play_mp3("Quack.mp3")
             if v == "1":
                 print("Recieved 1")
+                pygame.mixer.init(104000)
                 play_mp3("Stop.mp3")
             if v == "2":
                 print("Recieved 2")
+                pygame.mixer.init(104000)
                 play_mp3("Final.mp3")
             if v == "3":
                 print("Recieved 3")
                 pygame.mixer.music.stop()
             if v == "4":
+                print("Recieved 4")
                 Water()
             v = clientsocket.recv(8).decode('utf-8')
 
