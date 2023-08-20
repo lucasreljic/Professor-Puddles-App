@@ -1,37 +1,38 @@
-[{
-    "name": "Ryan",
-    "front_p_min": 75,
-    "front_p_max": 95,
-    "left_s_min": 310,
-    "left_s_max": 320,
-    "right_s_min": 40,
-    "right_s_max": 50
-},
-{
-    "name": "Lucas",
-    "front_p_min": 75,
-    "front_p_max": 95,
-    "left_s_min": 310,
-    "left_s_max": 320,
-    "right_s_min": 40,
-    "right_s_max": 50
-},
-{
-    "name": "Grace",
-    "front_p_min": 75,
-    "front_p_max": 95,
-    "left_s_min": 310,
-    "left_s_max": 320,
-    "right_s_min": 40,
-    "right_s_max": 50
-},
-{
-    "name": "Sana",
-    "front_p_min": 75,
-    "front_p_max": 95,
-    "left_s_min": 310,
-    "left_s_max": 320,
-    "right_s_min": 40,
-    "right_s_max": 50
-}
+[
+    {
+        "name":"Ryan",
+        "shoulder_nose_shoulder":85,
+        "left_shoulder":315,
+        "right_shoulder":45
+    },
+    {
+        "name":"Lucas",
+        "shoulder_nose_shoulder":85,
+        "left_shoulder":315,
+        "right_shoulder":45
+    },
+    {
+        "name":"Grace",
+        "shoulder_nose_shoulder":85,
+        "left_shoulder":315,
+        "right_shoulder":45
+    },
+    {
+        "name":"Sana",
+        "shoulder_nose_shoulder":85,
+        "left_shoulder":315,
+        "right_shoulder":45
+    },
+    {
+        "name":"",
+        "shoulder_nose_shoulder":74.37083126278965,
+        "left_shoulder":313.00608102843455,
+        "right_shoulder":55.53066374811751
+    },
+    {
+        "name":"gracc",
+        "shoulder_nose_shoulder":152.168414021703,
+        "left_shoulder":210.43301416757225,
+        "right_shoulder":122.12588543203316
+    }
 ]

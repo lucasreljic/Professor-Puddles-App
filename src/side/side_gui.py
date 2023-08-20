@@ -4,7 +4,7 @@ from tkinter.ttk import Style, OptionMenu
 import cv2
 import json
 from PIL import Image, ImageTk
-from pose_detector import main, run
+from side.side_pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -51,7 +51,7 @@ class SideGUI:
         self.firstRun = True
         self.integer = 0
         self.i = 0
-        with open('side_data.json') as json_file:
+        with open('side/side_data.json') as json_file:
             self.loaded_data = json.load(json_file)
         self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"],
                          self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
@@ -63,7 +63,9 @@ class SideGUI:
         self.dropdown = self.create_styled_combobox(0.02, 0.05)
         self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.4)
         self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.5)
-        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.8)
+        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.7)
+        self.btn_switch_to_front = self.create_rounded_button("Switch to Front", "grey", self.switch_to_front, 0.02, 0.8)
+
         self.is_playing = False
         self.update()
 
@@ -186,6 +188,12 @@ class SideGUI:
             self.label_widget.configure(image=photo_image)
             self.label_widget.after(10, self.update)
 
+    def switch_to_front(self):
+        self.root.destroy()
+
+        from src.front.front_gui import front_gui   # lazy import to avoid circular import
+        front_gui()
+
     def __del__(self):
         if self.vid.isOpened():
             self.vid.release()
@@ -198,7 +206,3 @@ def side_gui():
     app = SideGUI(root)
 
     root.mainloop()
-
-
-if __name__ == "__main__":
-    side_gui()

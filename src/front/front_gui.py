@@ -4,8 +4,7 @@ from tkinter.ttk import Style, OptionMenu, Button
 import cv2
 import json
 from PIL import Image, ImageTk
-from pose_detector import main, run
-
+from front.front_pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -43,9 +42,8 @@ class FrontGUI:
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 4020)
 
         self.label_widget = tk.Label(root, borderwidth=2, relief="solid", highlightthickness=2,
-                                     highlightbackground="black")  # Initially set for LIGHT_MODE
+                                     highlightbackground="black")
         self.label_widget.place(relx=0.17, rely=0.05, relwidth=0.8, relheight=0.8)
-
         self.theme = LIGHT_MODE  # Start with light mode
 
         # Read data from the JSON file
@@ -59,12 +57,13 @@ class FrontGUI:
   
         self.dropdown_var = tk.StringVar()
         self.dropdown_var.set(self.loaded_data[0]["name"])
-        
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
         self.dropdown = self.create_styled_combobox(0.02, 0.05)
         self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.4)
         self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.5)
-        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.8)
+        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.7)
+        self.btn_switch_to_side = self.create_rounded_button("Switch to Side", "grey", self.switch_to_side, 0.02, 0.8)
+
         self.is_playing = False
         self.update()
 
@@ -147,7 +146,17 @@ class FrontGUI:
         combo = OptionMenu(self.root, self.dropdown_var, *self.dropdown)
         combo.place(relx=relx, rely=rely, relwidth=0.12)
         return combo
+    
+    def create_styled_textbox(self, relx, rely, color):
+        canvas = Canvas(self.root, bg=color, bd=0, highlightthickness=0, relief='ridge')
+        canvas.place(relx=relx, rely=rely, relwidth=0.11, relheight=0.08)
+        entry1 = tk.Entry(self.root)
+        r = 5
+        btn_shape = self.create_rounded_rectangle(canvas, 10, 10, 10 + 150, 10 + 40, r, outline=color, fill=color,
+                                                  width=2)
+        btn_id = canvas.create_window(relx, rely, window=entry1)
 
+        return canvas, entry1
     def start(self):
         if not self.is_playing:
             self.is_playing = True
@@ -161,6 +170,11 @@ class FrontGUI:
         messagebox.showinfo("Popup", "Submitted")
         self.savetoJson()
     def savetoJson(self):
+        self.entered_data["name"] = self.name.get()
+        self.entered_data["shoulder_nose_shoulder"] /= self.frames
+        self.entered_data["left_shoulder"] /= self.frames
+        self.entered_data["right_shoulder"] /= self.frames
+        self.frames = 0
         self.text_box.destroy()
         self.popup_btn.destroy()
         print("writing to json")
@@ -169,7 +183,8 @@ class FrontGUI:
             json.dump(self.loaded_data, json_file, indent=4, separators=(',',':'))
     def setupRun(self):
         _, img = self.vid.read()
-        img = run(img, self.i, self.detector, self.loaded_data, self.integer, True, entered_data=self.entered_data)
+        self.frames+=1
+        img, data = run(img, self.i, self.detector, self.loaded_data, self.integer, True, entered_data=self.entered_data)
         opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
         captured_image = Image.fromarray(opencv_image)
         photo_image = ImageTk.PhotoImage(image=captured_image)
@@ -180,14 +195,15 @@ class FrontGUI:
         else:
             return
     def setup(self):
-        self.firstRun = True
-        self.text_box = tk.Text(self.root, height=5, width=30)
-        self.text_box.place(x=0.17, y=0.08, relwidth=0.12)
-        self.text_box.pack(padx=10, pady=10)
-        self.popup_btn = self.create_rounded_button("Submit", "light green", self.show_popup, 0.02, 0.3)
-        name = self.text_box.get("1.0", "end-1c")
         self.entered_data = {}
-        self.entered_data["name"] = name
+        self.entered_data["name"] = ""
+        self.entered_data["shoulder_nose_shoulder"] = 0
+        self.entered_data["left_shoulder"] = 0
+        self.entered_data["right_shoulder"] = 0
+        self.frames = 0
+        self.firstRun = True
+        self.text_box, self.name = self.create_styled_textbox(0.07, 0.18, "light green")
+        self.popup_btn = self.create_rounded_button("Submit", "light green", self.show_popup, 0.02, 0.3)
         self.inSetup = True
         self.setupRun()
 
@@ -205,18 +221,23 @@ class FrontGUI:
                 if record["name"] == str(self.dropdown_var.get()):
                     self.integer = index
                     self.firstRun = False
-        _, img = self.vid.read()
-        img = run(img, self.i, self.detector, self.loaded_data, self.integer, False)
-        opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
 
         # needs to be here cannot be in backend
         if self.is_playing:
+            _, img = self.vid.read()
+            img, _ = run(img, self.i, self.detector, self.loaded_data, self.integer, False)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
             photo_image = ImageTk.PhotoImage(image=captured_image)
             self.label_widget.photo_image = photo_image
             self.label_widget.configure(image=photo_image)
             self.label_widget.after(10, self.update)
+
+    def switch_to_side(self):
+        self.root.destroy()
+
+        from src.side.side_gui import side_gui  # Lazy import to avoid circular import
+        side_gui()
 
     def __del__(self):
         if self.vid.isOpened():
