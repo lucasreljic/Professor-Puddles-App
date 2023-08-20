@@ -4,7 +4,7 @@ from tkinter.ttk import Style, OptionMenu
 import cv2
 import json
 from PIL import Image, ImageTk
-from pose_detector import main, run
+from src.pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",

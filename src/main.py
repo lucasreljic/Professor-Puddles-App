@@ -1,4 +1,4 @@
-from front_gui import gui
+from src.front.front_gui import front_gui
 
 if __name__ == "__main__":
-    gui()
+    front_gui()
