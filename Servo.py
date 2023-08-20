@@ -10,19 +10,23 @@ minPW=0.0004
 maxPW=0.004
 
 servo = AngularServo(18,min_pulse_width=minPW,max_pulse_width=maxPW)
+servo2 = AngularServo(14,min_pulse_width=minPW,max_pulse_width=maxPW)
 
 def Water():
     default = -0.5
     delay = 0.333
     servo.value = default
+    servo2.value = default
     sleep(2)
 
     playsound('Quack.mp3')
 
     for i in range(5):
         servo.value = -1
+        servo2.value = -1
         sleep(delay)
         servo.value = default
+        servo2.value = default
         sleep(delay)
     
 
@@ -30,4 +34,5 @@ try:
     Water()
 
 finally:
+    print("-------------------------")
     GPIO.cleanup()
