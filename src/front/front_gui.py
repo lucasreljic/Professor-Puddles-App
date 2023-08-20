@@ -5,7 +5,7 @@ import cv2
 import time
 import json
 from PIL import Image, ImageTk
-from src.front.front_pose_detector import main, run
+from front.front_pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -30,12 +30,12 @@ DARK_MODE = {
 
 class FrontGUI:
 
-    def __init__(self, root, video_source=0):
+    def __init__(self, root, pi_port = None, video_source=0):
         self.root = root
         self.root.title("Posture Corrector")
         self.root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
         self.combo_style = Style()
-
+        self.pi_port = pi_port
         self.video_source = video_source
         self.vid = cv2.VideoCapture(self.video_source)
         self.detector = main()
@@ -243,7 +243,7 @@ class FrontGUI:
         # needs to be here cannot be in backend
         if self.is_playing:
             _, img = self.vid.read()
-            img, _, self.time, self.i = run(img, self.i, self.detector, self.loaded_data, self.integer, False, timer = self.time)
+            img, _, self.time, self.i = run(img, self.i, self.detector, self.loaded_data, self.integer, False, timer = self.time, pi_port=self.pi_port)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
             photo_image = ImageTk.PhotoImage(image=captured_image)
@@ -262,10 +262,10 @@ class FrontGUI:
             self.vid.release()
 
 
-def front_gui():
+def front_gui(pi_port):
     root = tk.Tk()
     root.configure(bg="black")
     root.bind('<Escape>', lambda e: root.quit())
-    app = FrontGUI(root)
+    app = FrontGUI(root, pi_port= pi_port)
 
     root.mainloop()

@@ -43,7 +43,7 @@ class SidePoseDetector():
         return self.lmList
 
 
-def run(img, i, detector, data, dropdown, getData, entered_data = None,  timer = 0):
+def run(img, i, detector, data, dropdown, getData, entered_data = None,  timer = 0, pi_port = None):
     i += 1
 
     # Setup
@@ -113,6 +113,7 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None,  timer =
             newToast.text_fields = ['Sit up straight!']
             newToast.on_activated = lambda _: print('Acknowledged')
             toaster.show_toast(newToast)
+            pi_port.send(bytes(str(0).encode('utf-8')))
         elif i < 90 and i > 88:
             timer = time.time()
             print("second warning")
@@ -123,12 +124,14 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None,  timer =
             newToast.text_fields = ['Sit up straight I mean it!']
             newToast.on_activated = lambda _: print('Acknowledged!')
             toaster.show_toast(newToast)
+            pi_port.send(bytes(str(1).encode('utf-8')))
         elif time.time() - timer > 15:
             #kill computer
             print("die time")
             newToast.text_fields = ["You're gonna die now!"]
             newToast.on_activated = lambda _: print('You missed your chance!')
             toaster.show_toast(newToast)
+            pi_port.send(bytes(str(2).encode('utf-8')))
             time.sleep(0.1)
             i = 0
     return img, entered_data
