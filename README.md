@@ -1,2 +1,2 @@
-# Hackthe6ix
-Our project for hack the 6ix.
+# Professor Puddles
+1st place winners for Hack the 6ix 2023.
