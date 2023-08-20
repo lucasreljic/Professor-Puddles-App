@@ -21,9 +21,9 @@ servo = AngularServo(18,min_pulse_width=minPW,max_pulse_width=maxPW)
 default = -0.5
 delay = 0.333
 servo.value = default
+pygame.mixer.init()
 
 def play_mp3(file_path):
-    pygame.mixer.init()
     pygame.mixer.music.load(file_path)
     pygame.mixer.music.play()
 
