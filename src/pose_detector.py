@@ -3,11 +3,12 @@ import mediapipe as mp
 import math
 
 from windows_toasts import Toast, WindowsToaster
+
 toaster = WindowsToaster('Python')
 newToast = Toast()
 
 
-class PoseDetector():
+class FrontPoseDetector():
     def __init__(self, mode=False, smooth=True, detectionCon=0.5, trackCon=0.5):
         self.mode = mode
         self.smooth = smooth
@@ -38,14 +39,6 @@ class PoseDetector():
                 self.lmList.append([id, cx, cy])
         return self.lmList
 
-    # def showFps(self, img):
-    #     cTime = time.time()
-    #     print(cTime, self.pTime)
-    #     fbs = 1 / (cTime - self.pTime)
-    #     self.pTime = cTime
-    #     cv2.putText(img, str(int(fbs)), (70, 80), cv2.FONT_HERSHEY_PLAIN, 3,
-    #                 (255, 0, 0), 3)
-
     def find_angle(self, img, p1, p2, p3, draw=True):
         # Get the landmark
         try:
@@ -53,13 +46,14 @@ class PoseDetector():
             x2, y2 = self.lmList[p2][1:]
             x3, y3 = self.lmList[p3][1:]
         except:
-            x1 = 0 
+            x1 = 0
             y1 = 0
-            x2 = 0 
-            y2 = 0 
+            x2 = 0
+            y2 = 0
             x3 = 0
             y3 = 0
             print("out of bounds")
+
         # Calculate the angle
         angle = math.degrees(math.atan2(y3 - y2, x3 - x2) - math.atan2(y1 - y2, x1 - x2))
         # some time this angle comes zero, so below conditon we added
@@ -79,7 +73,8 @@ class PoseDetector():
             # cv2.putText(img, str(int(angle)), (x2 - 20, y2 + 50), cv2.FONT_HERSHEY_SIMPLEX,
             #             1, (0, 0, 255), 2)
         return angle
-    
+
+
 def run(img, i, detector, data, dropdown):
     i += 1
 
@@ -95,19 +90,18 @@ def run(img, i, detector, data, dropdown):
     right_shoulder = detector.find_angle(img, 10, 12, 11)
 
     good_poster = True
-    print(dropdown)
-    # TODO: add an interator for good_posture so it only sends a notification if you slouch
-    #  for a certain amount of time
-    # TODO: right now the following measurements are for me. we need code to make it personalized
+
+    # The actual criteria for a good posture
     if front_posture < data[dropdown]["front_p_min"] \
-            or front_posture >  data[dropdown]["front_p_max"] \
-            or left_shoulder <  data[dropdown]["left_s_min"] or left_shoulder >  data[dropdown]["left_s_max"] \
-            or right_shoulder <  data[dropdown]["right_s_min"] or right_shoulder >  data[dropdown]["right_s_max"]:
+            or front_posture > data[dropdown]["front_p_max"] \
+            or left_shoulder < data[dropdown]["left_s_min"] or left_shoulder > data[dropdown]["left_s_max"] \
+            or right_shoulder < data[dropdown]["right_s_min"] or right_shoulder > data[dropdown]["right_s_max"]:
         good_poster = False
     print(good_poster)
 
+    # Send notifications if bad posture
     if not good_poster and i > 100:
-        newToast.text_fields = ['!']
+        newToast.text_fields = ['Sit up straight!']
         newToast.on_activated = lambda _: print('Toast clicked!')
         toaster.show_toast(newToast)
         i = 0
@@ -115,8 +109,8 @@ def run(img, i, detector, data, dropdown):
 
 
 def main():
-    detector = PoseDetector()
-    #cap = cv2.VideoCapture(0)
+    detector = FrontPoseDetector()
+    # cap = cv2.VideoCapture(0)
     # while True:
     #     success, img = cap.read()
     #     img = detector.findPose(img)
