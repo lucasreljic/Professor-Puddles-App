@@ -4,7 +4,6 @@ import socket
 from gpiozero import AngularServo
 from time import sleep
 import RPi.GPIO as GPIO
-from playsound import playsound
 
 GPIO.setmode(GPIO.BCM)
 
@@ -22,8 +21,6 @@ delay = 0.333
 servo.value = default
 
 def Water():
-    playsound('Quack.mp3')
-
     for i in range(5):
         servo.value = -1
         sleep(delay)
@@ -43,8 +40,8 @@ try:
 
         v = clientsocket.recv(8).decode('utf-8')
         while v != "end":
-            #if v == "0":
-            #    Action0()
+            if v == "0":
+                print("Recieved 0")
             #if v == "1":
             #    Action1()
             #if v == "2":
