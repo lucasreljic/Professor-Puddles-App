@@ -55,11 +55,11 @@ try:
                 play_mp3("Quack.mp3")
             if v == "1":
                 print("Recieved 1")
-                pygame.mixer.init(104000)
+                pygame.mixer.init(81415)
                 play_mp3("Stop.mp3")
             if v == "2":
                 print("Recieved 2")
-                pygame.mixer.init(104000)
+                pygame.mixer.init(81415)
                 play_mp3("Final.mp3")
             if v == "3":
                 print("Recieved 3")
