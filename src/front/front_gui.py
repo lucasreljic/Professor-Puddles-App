@@ -51,10 +51,15 @@ class FrontGUI:
         self.integer = 0
         self.i = 0
         self.inSetup = False
-        with open('front/front_data.json') as json_file:
+        with open('front_data.json') as json_file:
             self.loaded_data = json.load(json_file)
-        self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"], self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
-
+        self.dropdown_values = [self.loaded_data[0]["name"]]
+        for k in range(10):
+            try:
+                if self.loaded_data[k] is not None:
+                    self.dropdown_values.append(self.loaded_data[k]["name"])
+            except:
+                print("more configs to fill up")
         self.dropdown_var = tk.StringVar()
         self.dropdown_var.set(self.loaded_data[0]["name"])
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
@@ -143,18 +148,17 @@ class FrontGUI:
                               foreground=self.theme["dropdown_text"],
                               padding=10,
                               font=("Helvetica", 12))
-        combo = OptionMenu(self.root, self.dropdown_var, *self.dropdown)
+        combo = OptionMenu(self.root, self.dropdown_var, *self.dropdown_values)
         combo.place(relx=relx, rely=rely, relwidth=0.12)
         return combo
     
-    def create_styled_textbox(self, relx, rely, color):
-        canvas = Canvas(self.root, bg=color, bd=0, highlightthickness=0, relief='ridge')
+    def create_styled_textbox(self, relx, rely):
+        canvas = Canvas(self.root, bd=0, highlightthickness=0, relief='ridge')
         canvas.place(relx=relx, rely=rely, relwidth=0.11, relheight=0.08)
         entry1 = tk.Entry(self.root)
         r = 5
-        btn_shape = self.create_rounded_rectangle(canvas, 10, 10, 10 + 150, 10 + 40, r, outline=color, fill=color,
-                                                  width=2)
-        btn_id = canvas.create_window(relx, rely, window=entry1)
+        canvas.create_text(70, 30, text="Name:", fill=self.theme["btn_text"], font=("Helvetica", 12))
+        canvas.create_window(40, 40, window=entry1, anchor="nw")
 
         return canvas, entry1
 
@@ -167,9 +171,12 @@ class FrontGUI:
     def stop(self):
         self.is_playing = False
     def show_popup(self):
-        self.inSetup = False
-        messagebox.showinfo("Popup", "Submitted")
-        self.savetoJson()
+        if(self.name.get() != ""):
+            self.inSetup = False
+            messagebox.showinfo("Success!", "Submitted")
+            self.savetoJson()
+        else:
+            messagebox.showinfo("Error!", "No Name")
     def savetoJson(self):
         self.entered_data["name"] = self.name.get()
         self.entered_data["shoulder_nose_shoulder"] /= self.frames
@@ -180,12 +187,10 @@ class FrontGUI:
         self.popup_btn.destroy()
         print("writing to json")
         self.loaded_data.append(self.entered_data)
-        with open('front/front_data.json', 'w') as json_file:
+        with open('front_data.json', 'w') as json_file:
             json.dump(self.loaded_data, json_file, indent=4, separators=(',', ':'))
-        self.dropdown.destroy()
-        self.dropdown.clipboard_append(self.name.get())
-        self.dropdown = self.create_styled_combobox(0.02, 0.05)
-
+        self.dropdown_values.append(self.name.get())
+        self.dropdown_var.set(self.name.get())
     def setupRun(self):
         _, img = self.vid.read()
         self.frames+=1
@@ -208,7 +213,7 @@ class FrontGUI:
         self.entered_data["right_shoulder"] = 0
         self.frames = 0
         self.firstRun = True
-        self.text_box, self.name = self.create_styled_textbox(0.07, 0.18, "light green")
+        self.text_box, self.name = self.create_styled_textbox(0.02, 0.15)
         self.popup_btn = self.create_rounded_button("Submit", "light green", self.show_popup, 0.02, 0.3)
         self.inSetup = True
         self.setupRun()
