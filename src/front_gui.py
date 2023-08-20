@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import Canvas
-from tkinter.ttk import Style, Combobox, OptionMenu, Button
+from tkinter.ttk import Style, OptionMenu
 import cv2
 import json
 from PIL import Image, ImageTk
