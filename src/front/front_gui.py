@@ -32,7 +32,7 @@ class FrontGUI:
 
     def __init__(self, root, pi_port = None, video_source=0):
         self.root = root
-        self.root.title("Posture Corrector")
+        self.root.title("Posture Profectors")
         self.root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
         self.combo_style = Style()
         self.pi_port = pi_port
@@ -254,8 +254,8 @@ class FrontGUI:
     def switch_to_side(self):
         self.root.destroy()
 
-        from src.side.side_gui import side_gui  # Lazy import to avoid circular import
-        side_gui()
+        from side.side_gui import side_gui  # Lazy import to avoid circular import
+        side_gui(self.pi_port)
 
     def __del__(self):
         if self.vid.isOpened():

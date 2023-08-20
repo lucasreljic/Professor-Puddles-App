@@ -3,8 +3,8 @@ from front.front_gui import front_gui
 import socket
 from time import sleep
 
-port = 8833
-host = '192.168.137.212'
+port = 8383
+host = '192.168.137.139'
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 connect = True

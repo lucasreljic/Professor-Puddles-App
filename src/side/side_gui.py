@@ -32,7 +32,7 @@ class SideGUI:
 
     def __init__(self, root, pi_port = None, video_source=1):
         self.root = root
-        self.root.title("Posture Corrector")
+        self.root.title("Posture Profectors")
         self.root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
         self.combo_style = Style()
         self.pi_port = pi_port
@@ -261,8 +261,7 @@ class SideGUI:
         # needs to be here cannot be in backend
         if self.is_playing:
             _, img = self.vid.read()
-            img = cv2.rotate(img, cv2.ROTATE_180)
-            img, self.time, self.i = run(img, self.i, self.detector, self.loaded_data, self.integer, False, timer=self.time, pi_port = self.pi_port)
+            img, _, self.time, self.i,  = run(img, self.i, self.detector, self.loaded_data, self.integer, False, timer=self.time, pi_port = self.pi_port)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
@@ -274,8 +273,8 @@ class SideGUI:
     def switch_to_front(self):
         self.root.destroy()
 
-        from src.front.front_gui import front_gui   # lazy import to avoid circular import
-        front_gui()
+        from front.front_gui import front_gui   # lazy import to avoid circular import
+        front_gui(self.pi_port)
 
     def __del__(self):
         if self.vid.isOpened():

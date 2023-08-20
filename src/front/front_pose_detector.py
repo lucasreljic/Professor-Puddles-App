@@ -104,7 +104,7 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 
 
             good_poster = False
 
-        if good_poster and 5 < (time.time() - timer) < 11:
+        if good_poster and 4 < (time.time() - timer) < 11:
             if i > 0:
                 i -=2
             timer = time.time()
@@ -128,7 +128,7 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 
                 pi_port.send(bytes(str(0).encode('utf-8')))
             except:
                 print("could not tell duck")
-        if  not good_poster and i < 82 and i > 80:
+        if  not good_poster and i < 152 and i > 150:
             print("second warning")
             frequency = 2500  # Set Frequency To 2500 Hertz
             duration = 800  # Set Duration To 1000 ms == 1 second
@@ -140,7 +140,7 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 
                 pi_port.send(bytes(str(1).encode('utf-8')))
             except:
                 print("could not tell duck")
-        elif not good_poster and i < 120 and i > 118:
+        elif not good_poster and i < 200 and i > 198:
             timer = time.time()
             print("third warning")
             newToast.text_fields = ["Countdown Beginning!"]
@@ -149,7 +149,7 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 
                 pi_port.send(bytes(str(2).encode('utf-8')))
             except:
                 print("could not tell duck")
-        elif not good_poster and time.time() - timer > 11:
+        elif not good_poster and i > 200 and time.time() - timer > 11:
             #kill computer
             print("countdown completed")
             newToast.text_fields = ["Countdown Ends, now face the consequences!"]

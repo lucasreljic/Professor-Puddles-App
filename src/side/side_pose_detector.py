@@ -158,7 +158,7 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None,  timer =
                 print("could not tell duck")
             time.sleep(0.1)
             i = 0
-    return img, entered_data
+    return img, entered_data, timer, i
 
 
 def main():
