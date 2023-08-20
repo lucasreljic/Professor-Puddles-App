@@ -4,7 +4,7 @@ from tkinter.ttk import Style, OptionMenu
 import cv2
 import json
 from PIL import Image, ImageTk
-from src.front.front_pose_detector import main, run
+from src.side.side_pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -51,7 +51,7 @@ class SideGUI:
         self.firstRun = True
         self.integer = 0
         self.i = 0
-        with open('side_data.json') as json_file:
+        with open('side/side_data.json') as json_file:
             self.loaded_data = json.load(json_file)
         self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"],
                          self.loaded_data[2]["name"], self.loaded_data[3]["name"]]

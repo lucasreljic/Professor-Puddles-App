@@ -9,6 +9,7 @@ newToast = Toast()
 
 
 class SidePoseDetector():
+
     def __init__(self, mode=False, smooth=True, detectionCon=0.5, trackCon=0.5):
         self.mode = mode
         self.smooth = smooth
@@ -39,6 +40,7 @@ class SidePoseDetector():
                 self.lmList.append([id, cx, cy])
         return self.lmList
 
+
 def run(img, i, detector, data, dropdown):
     i += 1
 
@@ -47,20 +49,37 @@ def run(img, i, detector, data, dropdown):
     detector.get_position(img)  # DO NOT DELETE: this will give the landmark list
 
     # Get the landmarks
+    lmList = detector.get_position(img)
 
+    x0, y0 = lmList[0][1], lmList[0][2]
+
+    x2, y2 = lmList[2][1], lmList[2][2]
+    x5, y5 = lmList[5][1], lmList[5][2]
+
+    x7, y7 = lmList[7][1], lmList[7][2]
+    x8, y8 = lmList[8][1], lmList[8][2]
+
+    x11, y11 = lmList[11][1], lmList[11][2]
+    x12, y12 = lmList[12][1], lmList[12][2]
 
     good_poster = True
 
     # The actual criteria for a good posture
-    if front_posture < data[dropdown]["shoulder_nose_shoulder"] - 10 \
-            or front_posture > data[dropdown]["shoulder_nose_shoulder"] + 10 \
-            or left_shoulder < data[dropdown]["left_shoulder"] - 10 \
-            or left_shoulder > data[dropdown]["left_shoulder"] + 10 \
-            or right_shoulder < data[dropdown]["right_shoulder"] - 10 \
-            or right_shoulder > data[dropdown]["right_shoulder"] + 10:
-
+    if x0 < data[dropdown]["x0"] - 200 or x0 > data[dropdown]["x0"] + 200 \
+            or x2 < data[dropdown]["x2"] - 200 or x2 > data[dropdown]["x2"] + 200 \
+            or x5 < data[dropdown]["x5"] - 200 or x5 > data[dropdown]["x5"] + 200 \
+            or x7 < data[dropdown]["x7"] - 200 or x7 > data[dropdown]["x7"] + 200 \
+            or x8 < data[dropdown]["x8"] - 200 or x8 > data[dropdown]["x8"] + 200 \
+            or x11 < data[dropdown]["x11"] - 200 or x11 > data[dropdown]["x11"] + 200 \
+            or x12 < data[dropdown]["x12"] - 200 or x12 > data[dropdown]["x12"] + 200 \
+            or y0 > data[dropdown]["y0"] + 100 \
+            or y2 > data[dropdown]["y2"] + 100 \
+            or y5 > data[dropdown]["y5"] + 100 \
+            or y7 > data[dropdown]["y7"] + 100 \
+            or y8 > data[dropdown]["y8"] + 100 \
+            or y11 > data[dropdown]["y11"] + 100 \
+            or y12 > data[dropdown]["y12"] + 100:
         good_poster = False
-
     print(good_poster)
 
     # Send notifications if bad posture
