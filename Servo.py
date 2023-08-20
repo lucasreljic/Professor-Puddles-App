@@ -43,7 +43,7 @@ def Bubbles():
     
 
 try:
-    Bubbles()
+    Water()
 
 finally:
     GPIO.cleanup()
