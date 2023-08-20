@@ -4,7 +4,7 @@ from tkinter.ttk import Style, OptionMenu, Button
 import cv2
 import json
 from PIL import Image, ImageTk
-from front.front_pose_detector import main, run
+from src.front.front_pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -170,6 +170,7 @@ class FrontGUI:
 
     def stop(self):
         self.is_playing = False
+
     def show_popup(self):
         if(self.name.get() != ""):
             self.inSetup = False
@@ -177,6 +178,7 @@ class FrontGUI:
             self.savetoJson()
         else:
             messagebox.showinfo("Error!", "No Name")
+
     def savetoJson(self):
         self.entered_data["name"] = self.name.get()
         self.entered_data["shoulder_nose_shoulder"] /= self.frames
@@ -191,6 +193,7 @@ class FrontGUI:
             json.dump(self.loaded_data, json_file, indent=4, separators=(',', ':'))
         self.dropdown_values.append(self.name.get())
         self.dropdown_var.set(self.name.get())
+
     def setupRun(self):
         _, img = self.vid.read()
         self.frames+=1
@@ -204,6 +207,7 @@ class FrontGUI:
             self.label_widget.after(10, self.setupRun)
         else:
             return
+
     def setup(self):
         self.is_playing = False
         self.entered_data = {}
