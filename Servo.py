@@ -1,7 +1,7 @@
 from gpiozero import AngularServo
 from time import sleep
 import RPi.GPIO as GPIO
-from playsound import playsound
+import pygame
 
 GPIO.setmode(GPIO.BCM)
 
@@ -12,6 +12,11 @@ maxPW=0.004
 servo = AngularServo(18,min_pulse_width=minPW,max_pulse_width=maxPW)
 servo2 = AngularServo(14,min_pulse_width=minPW,max_pulse_width=maxPW)
 
+def play_mp3(file_path):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file_path)
+    pygame.mixer.music.play()
+
 def Water():
     default = -0.5
     delay = 0.333
@@ -19,7 +24,7 @@ def Water():
     servo2.value = default
     sleep(2)
 
-    playsound('Quack.mp3')
+    play_mp3("Quack.mp3")
 
     for i in range(5):
         servo.value = -1
