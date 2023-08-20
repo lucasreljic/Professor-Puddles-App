@@ -4,8 +4,7 @@ from tkinter.ttk import Style, OptionMenu
 import cv2
 import json
 from PIL import Image, ImageTk
-from src.pose_detector import main, run
-
+from src.front.front_pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -43,27 +42,27 @@ class FrontGUI:
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 4020)
 
         self.label_widget = tk.Label(root, borderwidth=2, relief="solid", highlightthickness=2,
-                                     highlightbackground="black")  # Initially set for LIGHT_MODE
+                                     highlightbackground="black")
         self.label_widget.place(relx=0.17, rely=0.05, relwidth=0.8, relheight=0.8)
-
         self.theme = LIGHT_MODE  # Start with light mode
 
         # Read data from the JSON file
         self.firstRun = True
         self.integer = 0
         self.i = 0
-        with open('front_data.json') as json_file:
+        with open('front/front_data.json') as json_file:
             self.loaded_data = json.load(json_file)
         self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"], self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
   
         self.dropdown_var = tk.StringVar()
         self.dropdown_var.set(self.loaded_data[0]["name"])
-        
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
         self.dropdown = self.create_styled_combobox(0.02, 0.05)
         self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.4)
         self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.5)
-        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.8)
+        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.7)
+        self.btn_switch_to_side = self.create_rounded_button("Switch to Side", "grey", self.switch_to_side, 0.02, 0.8)
+
         self.is_playing = False
         self.update()
 
@@ -184,6 +183,12 @@ class FrontGUI:
             self.label_widget.photo_image = photo_image
             self.label_widget.configure(image=photo_image)
             self.label_widget.after(10, self.update)
+
+    def switch_to_side(self):
+        self.root.destroy()
+
+        from src.side.side_gui import side_gui  # Lazy import to avoid circular import
+        side_gui()
 
     def __del__(self):
         if self.vid.isOpened():
