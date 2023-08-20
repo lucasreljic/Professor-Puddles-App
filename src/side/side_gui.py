@@ -5,7 +5,7 @@ import cv2
 import json
 import time
 from PIL import Image, ImageTk
-from src.side.side_pose_detector import main, run
+from side.side_pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -30,12 +30,12 @@ DARK_MODE = {
 
 class SideGUI:
 
-    def __init__(self, root, video_source=1):
+    def __init__(self, root, pi_port = None, video_source=1):
         self.root = root
         self.root.title("Posture Corrector")
         self.root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
         self.combo_style = Style()
-
+        self.pi_port = pi_port
         self.video_source = video_source
         self.vid = cv2.VideoCapture(self.video_source)
         self.detector = main()
@@ -262,7 +262,7 @@ class SideGUI:
         if self.is_playing:
             _, img = self.vid.read()
             img = cv2.rotate(img, cv2.ROTATE_180)
-            img, self.time, self.i = run(img, self.i, self.detector, self.loaded_data, self.integer, False, timer=self.time)
+            img, self.time, self.i = run(img, self.i, self.detector, self.loaded_data, self.integer, False, timer=self.time, pi_port = self.pi_port)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
@@ -282,10 +282,10 @@ class SideGUI:
             self.vid.release()
 
 
-def side_gui():
+def side_gui(pi_port):
     root = tk.Tk()
     root.configure(bg="black")
     root.bind('<Escape>', lambda e: root.quit())
-    app = SideGUI(root)
+    app = SideGUI(root, pi_port=pi_port)
 
     root.mainloop()
