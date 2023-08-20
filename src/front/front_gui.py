@@ -6,7 +6,6 @@ import json
 from PIL import Image, ImageTk
 from src.front.front_pose_detector import main, run
 
-
 LIGHT_MODE = {
     "bg": "white",
     "text": "black",
@@ -61,7 +60,9 @@ class FrontGUI:
         self.dropdown = self.create_styled_combobox(0.02, 0.05)
         self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.4)
         self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.5)
-        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.8)
+        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.7)
+        self.btn_switch_to_side = self.create_rounded_button("Switch to Side", "grey", self.switch_to_side, 0.02, 0.8)
+
         self.is_playing = False
         self.update()
 
@@ -182,6 +183,12 @@ class FrontGUI:
             self.label_widget.photo_image = photo_image
             self.label_widget.configure(image=photo_image)
             self.label_widget.after(10, self.update)
+
+    def switch_to_side(self):
+        self.root.destroy()
+
+        from src.side.side_gui import side_gui  # Lazy import to avoid circular import
+        side_gui()
 
     def __del__(self):
         if self.vid.isOpened():

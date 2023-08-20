@@ -63,7 +63,9 @@ class SideGUI:
         self.dropdown = self.create_styled_combobox(0.02, 0.05)
         self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.4)
         self.btn_stop = self.create_rounded_button("Stop", "#FF8888", self.stop, 0.02, 0.5)
-        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.8)
+        self.btn_theme_toggle = self.create_rounded_button("Toggle Theme", "grey", self.toggle_theme, 0.02, 0.7)
+        self.btn_switch_to_front = self.create_rounded_button("Switch to Front", "grey", self.switch_to_front, 0.02, 0.8)
+
         self.is_playing = False
         self.update()
 
@@ -186,6 +188,12 @@ class SideGUI:
             self.label_widget.configure(image=photo_image)
             self.label_widget.after(10, self.update)
 
+    def switch_to_front(self):
+        self.root.destroy()
+
+        from src.front.front_gui import front_gui   # lazy import to avoid circular import
+        front_gui()
+
     def __del__(self):
         if self.vid.isOpened():
             self.vid.release()
@@ -198,7 +206,3 @@ def side_gui():
     app = SideGUI(root)
 
     root.mainloop()
-
-
-if __name__ == "__main__":
-    side_gui()
