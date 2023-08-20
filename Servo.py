@@ -24,7 +24,7 @@ def Water():
     servo2.value = default
     sleep(2)
 
-    play_mp3("Quack.mp3")
+    play_mp3("Final.wav")
 
     for i in range(5):
         servo.value = -1
