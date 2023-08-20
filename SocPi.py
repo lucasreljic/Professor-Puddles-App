@@ -28,7 +28,7 @@ def play_mp3(file_path):
 
 def Water():
     play_mp3("Quack.mp3")
-    for i in range(5):
+    for i in range(12):
         servo.value = -1
         sleep(delay)
         servo.value = default
