@@ -1,6 +1,8 @@
 import cv2
 import mediapipe as mp
 import math
+import time
+import winsound
 
 from windows_toasts import Toast, WindowsToaster
 
@@ -41,7 +43,7 @@ class SidePoseDetector():
         return self.lmList
 
 
-def run(img, i, detector, data, dropdown, getData, entered_data = None):
+def run(img, i, detector, data, dropdown, getData, entered_data = None,  timer = 0):
     i += 1
 
     # Setup
@@ -100,10 +102,34 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None):
         print(good_poster)
 
         # Send notifications if bad posture
-        if not good_poster and i > 100:
+        if good_poster:
+            if i > 0:
+                i -=2
+            timer = time.time()
+
+        # Send notifications if bad posture
+        if not good_poster and i < 52 and i > 50:
+            print("first warning")
             newToast.text_fields = ['Sit up straight!']
-            newToast.on_activated = lambda _: print('Toast clicked!')
+            newToast.on_activated = lambda _: print('Acknowledged')
             toaster.show_toast(newToast)
+        elif i < 90 and i > 88:
+            timer = time.time()
+            print("second warning")
+            frequency = 2500  # Set Frequency To 2500 Hertz
+            duration = 1000  # Set Duration To 1000 ms == 1 second
+            winsound.Beep(frequency, duration)
+            time.sleep(0.01)
+            newToast.text_fields = ['Sit up straight I mean it!']
+            newToast.on_activated = lambda _: print('Acknowledged!')
+            toaster.show_toast(newToast)
+        elif time.time() - timer > 15:
+            #kill computer
+            print("die time")
+            newToast.text_fields = ["You're gonna die now!"]
+            newToast.on_activated = lambda _: print('You missed your chance!')
+            toaster.show_toast(newToast)
+            time.sleep(0.1)
             i = 0
     return img, entered_data
 
