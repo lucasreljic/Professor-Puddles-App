@@ -59,7 +59,7 @@ try:
                 play_mp3("Final.mp3")
             if v == "3":
                 print("Recieved 3")
-                pygame.mixer.music.stop
+                pygame.mixer.music.stop()
             if v == "4":
                 Water()
             v = clientsocket.recv(8).decode('utf-8')
