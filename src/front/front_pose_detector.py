@@ -83,8 +83,6 @@ def run(img, i, detector, data, dropdown):
     detector.get_position(img)  # DO NOT DELETE: this will give the landmark list
 
     # Interested angle
-    # r_turn = detector.find_angle(img, 6, 8, 0)
-    # l_turn = detector.find_angle(img, 3, 7, 0)
     front_posture = detector.find_angle(img, 11, 0, 12)
     left_shoulder = detector.find_angle(img, 9, 11, 12)
     right_shoulder = detector.find_angle(img, 10, 12, 11)
@@ -92,11 +90,15 @@ def run(img, i, detector, data, dropdown):
     good_poster = True
 
     # The actual criteria for a good posture
-    if front_posture < data[dropdown]["front_p_min"] \
-            or front_posture > data[dropdown]["front_p_max"] \
-            or left_shoulder < data[dropdown]["left_s_min"] or left_shoulder > data[dropdown]["left_s_max"] \
-            or right_shoulder < data[dropdown]["right_s_min"] or right_shoulder > data[dropdown]["right_s_max"]:
+    if front_posture < data[dropdown]["shoulder_nose_shoulder"] - 10 \
+            or front_posture > data[dropdown]["shoulder_nose_shoulder"] + 10 \
+            or left_shoulder < data[dropdown]["left_shoulder"] - 10 \
+            or left_shoulder > data[dropdown]["left_shoulder"] + 10 \
+            or right_shoulder < data[dropdown]["right_shoulder"] - 10 \
+            or right_shoulder > data[dropdown]["right_shoulder"] + 10:
+
         good_poster = False
+
     print(good_poster)
 
     # Send notifications if bad posture
