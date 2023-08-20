@@ -53,7 +53,7 @@ class GUI:
         self.firstRun = True
         self.integer = 0
         self.i = 0
-        with open('data.json') as json_file:
+        with open('front_data.json') as json_file:
             self.loaded_data = json.load(json_file)
         self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"], self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
         
@@ -163,7 +163,7 @@ class GUI:
         entry1 = tk.Entry(self.root) 
         # canvas1.create_window(200, 140, window=entry1)
         # data
-        # with open("data.json", "w") as json_file:
+        # with open("front_data.json", "w") as json_file:
         #     json.dump(data, json_file, indent=4)
         self.setup = False
 
