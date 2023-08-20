@@ -1,10 +1,10 @@
 import tkinter as tk
-from tkinter import Canvas
-from tkinter.ttk import Style, OptionMenu
+from tkinter import Canvas, messagebox
+from tkinter.ttk import Style, OptionMenu, Button
 import cv2
 import json
 from PIL import Image, ImageTk
-from src.pose_detector import main, run
+from pose_detector import main, run
 
 
 LIGHT_MODE = {
@@ -52,6 +52,7 @@ class FrontGUI:
         self.firstRun = True
         self.integer = 0
         self.i = 0
+        self.inSetup = False
         with open('front_data.json') as json_file:
             self.loaded_data = json.load(json_file)
         self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"], self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
@@ -155,15 +156,47 @@ class FrontGUI:
 
     def stop(self):
         self.is_playing = False
-
+    def show_popup(self):
+        self.inSetup = False
+        messagebox.showinfo("Popup", "Submitted")
+        self.savetoJson()
+    def savetoJson(self):
+        self.text_box.destroy()
+        self.popup_btn.destroy()
+        print("writing to json")
+        self.loaded_data.append(self.entered_data)
+        with open('front_data.json', 'w') as json_file:
+            json.dump(self.loaded_data, json_file, indent=4, separators=(',',':'))
+    def setupRun(self):
+        _, img = self.vid.read()
+        img = run(img, self.i, self.detector, self.loaded_data, self.integer, True, entered_data=self.entered_data)
+        opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
+        captured_image = Image.fromarray(opencv_image)
+        photo_image = ImageTk.PhotoImage(image=captured_image)
+        self.label_widget.photo_image = photo_image
+        self.label_widget.configure(image=photo_image)
+        if self.inSetup:
+            self.label_widget.after(10, self.setupRun)
+        else:
+            return
     def setup(self):
         self.firstRun = True
+        self.text_box = tk.Text(self.root, height=5, width=30)
+        self.text_box.place(x=0.17, y=0.08, relwidth=0.12)
+        self.text_box.pack(padx=10, pady=10)
+        self.popup_btn = self.create_rounded_button("Submit", "light green", self.show_popup, 0.02, 0.3)
+        name = self.text_box.get("1.0", "end-1c")
+        self.entered_data = {}
+        self.entered_data["name"] = name
+        self.inSetup = True
+        self.setupRun()
+
         entry1 = tk.Entry(self.root) 
         # canvas1.create_window(200, 140, window=entry1)
         # data
         # with open("front_data.json", "w") as json_file:
         #     json.dump(data, json_file, indent=4)
-        self.setup = False
+        #self.setupRun = False
 
     def update(self):
         # Capture the video frame by frame
@@ -173,7 +206,7 @@ class FrontGUI:
                     self.integer = index
                     self.firstRun = False
         _, img = self.vid.read()
-        img = run(img, self.i, self.detector, self.loaded_data, self.integer)
+        img = run(img, self.i, self.detector, self.loaded_data, self.integer, False)
         opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
 
         # needs to be here cannot be in backend

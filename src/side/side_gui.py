@@ -4,7 +4,7 @@ from tkinter.ttk import Style, OptionMenu
 import cv2
 import json
 from PIL import Image, ImageTk
-from src.pose_detector import main, run
+from pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -172,13 +172,13 @@ class SideGUI:
                 if record["name"] == str(self.dropdown_var.get()):
                     self.integer = index
                     self.firstRun = False
-        _, img = self.vid.read()
-        img = cv2.rotate(img, cv2.ROTATE_180)
-        img = run(img, self.i, self.detector, self.loaded_data, self.integer)
-        opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
 
         # needs to be here cannot be in backend
         if self.is_playing:
+            _, img = self.vid.read()
+            img = cv2.rotate(img, cv2.ROTATE_180)
+            img = run(img, self.i, self.detector, self.loaded_data, self.integer)
+            opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
             photo_image = ImageTk.PhotoImage(image=captured_image)

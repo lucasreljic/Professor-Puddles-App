@@ -80,7 +80,7 @@ class PoseDetector():
             #             1, (0, 0, 255), 2)
         return angle
     
-def run(img, i, detector, data, dropdown):
+def run(img, i, detector, data, dropdown, getData, entered_data = None):
     i += 1
 
     # Setup
@@ -99,19 +99,23 @@ def run(img, i, detector, data, dropdown):
     # TODO: add an interator for good_posture so it only sends a notification if you slouch
     #  for a certain amount of time
     # TODO: right now the following measurements are for me. we need code to make it personalized
-    if front_posture < data[dropdown]["front_p_min"] \
-            or front_posture >  data[dropdown]["front_p_max"] \
-            or left_shoulder <  data[dropdown]["left_s_min"] or left_shoulder >  data[dropdown]["left_s_max"] \
-            or right_shoulder <  data[dropdown]["right_s_min"] or right_shoulder >  data[dropdown]["right_s_max"]:
-        good_poster = False
-    print(good_poster)
+    if getData:
+        entered_data = front_posture
+    else:
+        if front_posture < data[dropdown]["front_p_min"] \
+                or front_posture >  data[dropdown]["front_p_max"] \
+                or left_shoulder <  data[dropdown]["left_s_min"] or left_shoulder >  data[dropdown]["left_s_max"] \
+                or right_shoulder <  data[dropdown]["right_s_min"] or right_shoulder >  data[dropdown]["right_s_max"]:
+            good_poster = False
+        print(good_poster)
 
-    if not good_poster and i > 100:
-        newToast.text_fields = ['!']
-        newToast.on_activated = lambda _: print('Toast clicked!')
-        toaster.show_toast(newToast)
-        i = 0
-    return img
+        if not good_poster and i > 100:
+            newToast.text_fields = ['!']
+            newToast.on_activated = lambda _: print('Toast clicked!')
+            toaster.show_toast(newToast)
+            i = 0
+
+    return img, entered_data
 
 
 def main():
