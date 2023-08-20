@@ -9,7 +9,7 @@ import pygame
 GPIO.setmode(GPIO.BCM)
 
 #socket params
-port = 8833
+port = 8383
 host = '192.168.137.139' 
 
 #servo pins
