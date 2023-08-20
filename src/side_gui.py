@@ -51,7 +51,7 @@ class SideGUI:
         self.firstRun = True
         self.integer = 0
         self.i = 0
-        with open('front_data.json') as json_file:
+        with open('side_data.json') as json_file:
             self.loaded_data = json.load(json_file)
         self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"],
                          self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
