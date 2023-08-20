@@ -6,6 +6,7 @@ from time import sleep
 import RPi.GPIO as GPIO
 import pygame
 
+sleep(20)
 
 GPIO.setmode(GPIO.BCM)
 

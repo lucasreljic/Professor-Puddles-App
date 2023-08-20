@@ -9,6 +9,9 @@ s.connect((host, port))
 
 print("Successfully connected to server")
 
+s.send(bytes(str(2).encode('utf-8')))
+sleep(20)
+
 for i in range(5):
     sleep(5)
     s.send(bytes(str(i).encode('utf-8')))
