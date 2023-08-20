@@ -1,6 +1,6 @@
 import tkinter as tk
-from tkinter import Canvas
-from tkinter.ttk import Style, OptionMenu
+from tkinter import Canvas, messagebox
+from tkinter.ttk import Style, OptionMenu, Button
 import cv2
 import json
 from PIL import Image, ImageTk
@@ -50,10 +50,16 @@ class FrontGUI:
         self.firstRun = True
         self.integer = 0
         self.i = 0
-        with open('front/front_data.json') as json_file:
+        self.inSetup = False
+        with open('front_data.json') as json_file:
             self.loaded_data = json.load(json_file)
-        self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"], self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
-  
+        self.dropdown_values = [self.loaded_data[0]["name"]]
+        for k in range(10):
+            try:
+                if self.loaded_data[k] is not None:
+                    self.dropdown_values.append(self.loaded_data[k]["name"])
+            except:
+                print("more configs to fill up")
         self.dropdown_var = tk.StringVar()
         self.dropdown_var.set(self.loaded_data[0]["name"])
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
@@ -142,9 +148,19 @@ class FrontGUI:
                               foreground=self.theme["dropdown_text"],
                               padding=10,
                               font=("Helvetica", 12))
-        combo = OptionMenu(self.root, self.dropdown_var, *self.dropdown)
+        combo = OptionMenu(self.root, self.dropdown_var, *self.dropdown_values)
         combo.place(relx=relx, rely=rely, relwidth=0.12)
         return combo
+    
+    def create_styled_textbox(self, relx, rely):
+        canvas = Canvas(self.root, bd=0, highlightthickness=0, relief='ridge')
+        canvas.place(relx=relx, rely=rely, relwidth=0.11, relheight=0.08)
+        entry1 = tk.Entry(self.root)
+        r = 5
+        canvas.create_text(70, 30, text="Name:", fill=self.theme["btn_text"], font=("Helvetica", 12))
+        canvas.create_window(40, 40, window=entry1, anchor="nw")
+
+        return canvas, entry1
 
     def start(self):
         if not self.is_playing:
@@ -155,14 +171,58 @@ class FrontGUI:
     def stop(self):
         self.is_playing = False
 
+    def show_popup(self):
+        if(self.name.get() != ""):
+            self.inSetup = False
+            messagebox.showinfo("Success!", "Submitted")
+            self.savetoJson()
+        else:
+            messagebox.showinfo("Error!", "No Name")
+
+    def savetoJson(self):
+        self.entered_data["name"] = self.name.get()
+        self.entered_data["shoulder_nose_shoulder"] /= self.frames
+        self.entered_data["left_shoulder"] /= self.frames
+        self.entered_data["right_shoulder"] /= self.frames
+        self.frames = 0
+        self.text_box.destroy()
+        self.popup_btn.destroy()
+        print("writing to json")
+        self.loaded_data.append(self.entered_data)
+        with open('front_data.json', 'w') as json_file:
+            json.dump(self.loaded_data, json_file, indent=4, separators=(',', ':'))
+        self.dropdown_values.append(self.name.get())
+        self.dropdown_var.set(self.name.get())
+
+    def setupRun(self):
+        _, img = self.vid.read()
+        self.frames+=1
+        img, data = run(img, self.i, self.detector, self.loaded_data, self.integer, True, entered_data=self.entered_data)
+        opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
+        captured_image = Image.fromarray(opencv_image)
+        photo_image = ImageTk.PhotoImage(image=captured_image)
+        self.label_widget.photo_image = photo_image
+        self.label_widget.configure(image=photo_image)
+        if self.inSetup:
+            self.label_widget.after(10, self.setupRun)
+        else:
+            return
+
     def setup(self):
+        self.is_playing = False
+        self.entered_data = {}
+        self.entered_data["name"] = ""
+        self.entered_data["shoulder_nose_shoulder"] = 0
+        self.entered_data["left_shoulder"] = 0
+        self.entered_data["right_shoulder"] = 0
+        self.frames = 0
         self.firstRun = True
-        entry1 = tk.Entry(self.root) 
-        # canvas1.create_window(200, 140, window=entry1)
-        # data
-        # with open("front_data.json", "w") as json_file:
-        #     json.dump(data, json_file, indent=4)
-        self.setup = False
+        self.text_box, self.name = self.create_styled_textbox(0.02, 0.15)
+        self.popup_btn = self.create_rounded_button("Submit", "light green", self.show_popup, 0.02, 0.3)
+        self.inSetup = True
+        self.setupRun()
+
+        entry1 = tk.Entry(self.root)
 
     def update(self):
         # Capture the video frame by frame
@@ -171,12 +231,11 @@ class FrontGUI:
                 if record["name"] == str(self.dropdown_var.get()):
                     self.integer = index
                     self.firstRun = False
-        _, img = self.vid.read()
-        img = run(img, self.i, self.detector, self.loaded_data, self.integer)
-        opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
 
         # needs to be here cannot be in backend
         if self.is_playing:
+            _, img = self.vid.read()
+            img, _ = run(img, self.i, self.detector, self.loaded_data, self.integer, False)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
             photo_image = ImageTk.PhotoImage(image=captured_image)

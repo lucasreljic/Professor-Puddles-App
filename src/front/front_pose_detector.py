@@ -56,7 +56,7 @@ class FrontPoseDetector():
 
         # Calculate the angle
         angle = math.degrees(math.atan2(y3 - y2, x3 - x2) - math.atan2(y1 - y2, x1 - x2))
-        # some time this angle comes zero, so below conditon we added
+        # some time this angle comes zero, so below condition we added
         if angle < 0:
             angle += 360
 
@@ -73,9 +73,8 @@ class FrontPoseDetector():
             # cv2.putText(img, str(int(angle)), (x2 - 20, y2 + 50), cv2.FONT_HERSHEY_SIMPLEX,
             #             1, (0, 0, 255), 2)
         return angle
-
-
-def run(img, i, detector, data, dropdown):
+    
+def run(img, i, detector, data, dropdown, getData, entered_data = None):
     i += 1
 
     # Setup
@@ -88,26 +87,30 @@ def run(img, i, detector, data, dropdown):
     right_shoulder = detector.find_angle(img, 10, 12, 11)
 
     good_poster = True
+    if getData:
+        entered_data["shoulder_nose_shoulder"] += front_posture
+        entered_data["left_shoulder"] += left_shoulder
+        entered_data["right_shoulder"] += right_shoulder
+    else:    
+        # The actual criteria for a good posture
+        if front_posture < data[dropdown]["shoulder_nose_shoulder"] - 10 \
+                or front_posture > data[dropdown]["shoulder_nose_shoulder"] + 10 \
+                or left_shoulder < data[dropdown]["left_shoulder"] - 10 \
+                or left_shoulder > data[dropdown]["left_shoulder"] + 10 \
+                or right_shoulder < data[dropdown]["right_shoulder"] - 10 \
+                or right_shoulder > data[dropdown]["right_shoulder"] + 10:
 
-    # The actual criteria for a good posture
-    if front_posture < data[dropdown]["shoulder_nose_shoulder"] - 10 \
-            or front_posture > data[dropdown]["shoulder_nose_shoulder"] + 10 \
-            or left_shoulder < data[dropdown]["left_shoulder"] - 10 \
-            or left_shoulder > data[dropdown]["left_shoulder"] + 10 \
-            or right_shoulder < data[dropdown]["right_shoulder"] - 10 \
-            or right_shoulder > data[dropdown]["right_shoulder"] + 10:
+            good_poster = False
 
-        good_poster = False
+        print(good_poster)
 
-    print(good_poster)
-
-    # Send notifications if bad posture
-    if not good_poster and i > 100:
-        newToast.text_fields = ['Sit up straight!']
-        newToast.on_activated = lambda _: print('Toast clicked!')
-        toaster.show_toast(newToast)
-        i = 0
-    return img
+        # Send notifications if bad posture
+        if not good_poster and i > 100:
+            newToast.text_fields = ['Sit up straight!']
+            newToast.on_activated = lambda _: print('Toast clicked!')
+            toaster.show_toast(newToast)
+            i = 0
+    return img, entered_data
 
 
 def main():

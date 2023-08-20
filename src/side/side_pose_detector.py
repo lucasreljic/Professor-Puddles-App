@@ -41,7 +41,7 @@ class SidePoseDetector():
         return self.lmList
 
 
-def run(img, i, detector, data, dropdown):
+def run(img, i, detector, data, dropdown, getData, entered_data = None):
     i += 1
 
     # Setup
@@ -63,32 +63,49 @@ def run(img, i, detector, data, dropdown):
     x12, y12 = lmList[12][1], lmList[12][2]
 
     good_poster = True
+    if getData:
+        data[dropdown]["x0"] += x0  
+        data[dropdown]["x2"] += x2
+        data[dropdown]["x5"] += x5 
+        data[dropdown]["x7"] += x7 
+        data[dropdown]["x8"] += x8 
+        data[dropdown]["x11"] += x11 
+        data[dropdown]["x12"] += x12
+        data[dropdown]["y0"] += y0 
+        data[dropdown]["y2"] += y2 
+        data[dropdown]["y5"] += y5 
+        data[dropdown]["y7"] += y7 
+        data[dropdown]["y8"] += y8 
+        data[dropdown]["y11"] += y11 
+        data[dropdown]["y12"] += y12 
+        
+        
+    else:
+        # The actual criteria for a good posture
+        if x0 < data[dropdown]["x0"] - 200 or x0 > data[dropdown]["x0"] + 200 \
+                or x2 < data[dropdown]["x2"] - 200 or x2 > data[dropdown]["x2"] + 200 \
+                or x5 < data[dropdown]["x5"] - 200 or x5 > data[dropdown]["x5"] + 200 \
+                or x7 < data[dropdown]["x7"] - 200 or x7 > data[dropdown]["x7"] + 200 \
+                or x8 < data[dropdown]["x8"] - 200 or x8 > data[dropdown]["x8"] + 200 \
+                or x11 < data[dropdown]["x11"] - 200 or x11 > data[dropdown]["x11"] + 200 \
+                or x12 < data[dropdown]["x12"] - 200 or x12 > data[dropdown]["x12"] + 200 \
+                or y0 > data[dropdown]["y0"] + 100 \
+                or y2 > data[dropdown]["y2"] + 100 \
+                or y5 > data[dropdown]["y5"] + 100 \
+                or y7 > data[dropdown]["y7"] + 100 \
+                or y8 > data[dropdown]["y8"] + 100 \
+                or y11 > data[dropdown]["y11"] + 100 \
+                or y12 > data[dropdown]["y12"] + 100:
+            good_poster = False
+        print(good_poster)
 
-    # The actual criteria for a good posture
-    if x0 < data[dropdown]["x0"] - 200 or x0 > data[dropdown]["x0"] + 200 \
-            or x2 < data[dropdown]["x2"] - 200 or x2 > data[dropdown]["x2"] + 200 \
-            or x5 < data[dropdown]["x5"] - 200 or x5 > data[dropdown]["x5"] + 200 \
-            or x7 < data[dropdown]["x7"] - 200 or x7 > data[dropdown]["x7"] + 200 \
-            or x8 < data[dropdown]["x8"] - 200 or x8 > data[dropdown]["x8"] + 200 \
-            or x11 < data[dropdown]["x11"] - 200 or x11 > data[dropdown]["x11"] + 200 \
-            or x12 < data[dropdown]["x12"] - 200 or x12 > data[dropdown]["x12"] + 200 \
-            or y0 > data[dropdown]["y0"] + 100 \
-            or y2 > data[dropdown]["y2"] + 100 \
-            or y5 > data[dropdown]["y5"] + 100 \
-            or y7 > data[dropdown]["y7"] + 100 \
-            or y8 > data[dropdown]["y8"] + 100 \
-            or y11 > data[dropdown]["y11"] + 100 \
-            or y12 > data[dropdown]["y12"] + 100:
-        good_poster = False
-    print(good_poster)
-
-    # Send notifications if bad posture
-    if not good_poster and i > 100:
-        newToast.text_fields = ['Sit up straight!']
-        newToast.on_activated = lambda _: print('Toast clicked!')
-        toaster.show_toast(newToast)
-        i = 0
-    return img
+        # Send notifications if bad posture
+        if not good_poster and i > 100:
+            newToast.text_fields = ['Sit up straight!']
+            newToast.on_activated = lambda _: print('Toast clicked!')
+            toaster.show_toast(newToast)
+            i = 0
+    return img, entered_data
 
 
 def main():
