@@ -2,7 +2,7 @@ import socket
 from time import sleep
 
 port = 8833
-host = '192.168.137.212'
+host = '192.168.137.139'
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((host, port))

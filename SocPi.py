@@ -11,7 +11,7 @@ GPIO.setmode(GPIO.BCM)
 
 #socket params
 port = 8833
-host = '192.168.137.212' 
+host = '192.168.137.139' 
 
 #servo pins
 minPW=0.0004
