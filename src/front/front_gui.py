@@ -43,9 +43,8 @@ class FrontGUI:
         self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 4020)
 
         self.label_widget = tk.Label(root, borderwidth=2, relief="solid", highlightthickness=2,
-                                     highlightbackground="black")  # Initially set for LIGHT_MODE
+                                     highlightbackground="black")
         self.label_widget.place(relx=0.17, rely=0.05, relwidth=0.8, relheight=0.8)
-
         self.theme = LIGHT_MODE  # Start with light mode
 
         # Read data from the JSON file
@@ -58,7 +57,6 @@ class FrontGUI:
   
         self.dropdown_var = tk.StringVar()
         self.dropdown_var.set(self.loaded_data[0]["name"])
-        
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
         self.dropdown = self.create_styled_combobox(0.02, 0.05)
         self.btn_start = self.create_rounded_button("Start", "light green", self.start, 0.02, 0.4)
