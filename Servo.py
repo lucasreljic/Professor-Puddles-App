@@ -34,6 +34,8 @@ def Bubbles():
         sleep(delay1)
         servo.value = default
         sleep(delay1)
+
+    for i in range(5):
         servo.value = 1
         sleep(delay2)
         servo.value = default
