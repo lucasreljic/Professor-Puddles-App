@@ -51,10 +51,10 @@ class FrontGUI:
         self.integer = 0
         self.i = 0
         self.inSetup = False
-        with open('front_data.json') as json_file:
+        with open('front/front_data.json') as json_file:
             self.loaded_data = json.load(json_file)
         self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"], self.loaded_data[2]["name"], self.loaded_data[3]["name"]]
-  
+
         self.dropdown_var = tk.StringVar()
         self.dropdown_var.set(self.loaded_data[0]["name"])
         self.btn_setup = self.create_rounded_button("Setup", "light blue", self.setup, 0.02, 0.15)
@@ -157,6 +157,7 @@ class FrontGUI:
         btn_id = canvas.create_window(relx, rely, window=entry1)
 
         return canvas, entry1
+
     def start(self):
         if not self.is_playing:
             self.is_playing = True
@@ -179,8 +180,12 @@ class FrontGUI:
         self.popup_btn.destroy()
         print("writing to json")
         self.loaded_data.append(self.entered_data)
-        with open('front_data.json', 'w') as json_file:
-            json.dump(self.loaded_data, json_file, indent=4, separators=(',',':'))
+        with open('front/front_data.json', 'w') as json_file:
+            json.dump(self.loaded_data, json_file, indent=4, separators=(',', ':'))
+        self.dropdown.destroy()
+        self.dropdown.clipboard_append(self.name.get())
+        self.dropdown = self.create_styled_combobox(0.02, 0.05)
+
     def setupRun(self):
         _, img = self.vid.read()
         self.frames+=1
@@ -195,6 +200,7 @@ class FrontGUI:
         else:
             return
     def setup(self):
+        self.is_playing = False
         self.entered_data = {}
         self.entered_data["name"] = ""
         self.entered_data["shoulder_nose_shoulder"] = 0
@@ -207,12 +213,7 @@ class FrontGUI:
         self.inSetup = True
         self.setupRun()
 
-        entry1 = tk.Entry(self.root) 
-        # canvas1.create_window(200, 140, window=entry1)
-        # data
-        # with open("front_data.json", "w") as json_file:
-        #     json.dump(data, json_file, indent=4)
-        #self.setupRun = False
+        entry1 = tk.Entry(self.root)
 
     def update(self):
         # Capture the video frame by frame

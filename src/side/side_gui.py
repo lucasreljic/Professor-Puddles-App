@@ -236,6 +236,8 @@ class SideGUI:
         # with open("front_data.json", "w") as json_file:
         #     json.dump(data, json_file, indent=4)
         #self.setupRun = False
+
+
     def update(self):
         # Capture the video frame by frame
         if self.firstRun:
@@ -248,7 +250,7 @@ class SideGUI:
         if self.is_playing:
             _, img = self.vid.read()
             img = cv2.rotate(img, cv2.ROTATE_180)
-            img = run(img, self.i, self.detector, self.loaded_data, self.integer)
+            img, _ = run(img, self.i, self.detector, self.loaded_data, self.integer, False)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
