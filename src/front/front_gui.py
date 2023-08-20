@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import Canvas, messagebox
 from tkinter.ttk import Style, OptionMenu, Button
 import cv2
+import time
 import json
 from PIL import Image, ImageTk
 from src.front.front_pose_detector import main, run
@@ -50,6 +51,8 @@ class FrontGUI:
         self.firstRun = True
         self.integer = 0
         self.i = 0
+        self.time = time.time()
+        print(self.time)
         self.inSetup = False
         with open('front_data.json') as json_file:
             self.loaded_data = json.load(json_file)
@@ -197,12 +200,16 @@ class FrontGUI:
     def setupRun(self):
         _, img = self.vid.read()
         self.frames+=1
-        img, data = run(img, self.i, self.detector, self.loaded_data, self.integer, True, entered_data=self.entered_data)
+        img, data, _, _= run(img, self.i, self.detector, self.loaded_data, self.integer, True, entered_data=self.entered_data)
         opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
         captured_image = Image.fromarray(opencv_image)
         photo_image = ImageTk.PhotoImage(image=captured_image)
         self.label_widget.photo_image = photo_image
         self.label_widget.configure(image=photo_image)
+        if self.name.get() != "" and (time.time() - self.time) > 5:
+            self.inSetup = False
+            messagebox.showinfo("Config", "Data collection timeout, submitted!")
+            self.savetoJson()
         if self.inSetup:
             self.label_widget.after(10, self.setupRun)
         else:
@@ -211,6 +218,7 @@ class FrontGUI:
     def setup(self):
         self.is_playing = False
         self.entered_data = {}
+        self.time = time.time()
         self.entered_data["name"] = ""
         self.entered_data["shoulder_nose_shoulder"] = 0
         self.entered_data["left_shoulder"] = 0
@@ -235,7 +243,7 @@ class FrontGUI:
         # needs to be here cannot be in backend
         if self.is_playing:
             _, img = self.vid.read()
-            img, _ = run(img, self.i, self.detector, self.loaded_data, self.integer, False)
+            img, _, self.time, self.i = run(img, self.i, self.detector, self.loaded_data, self.integer, False, timer = self.time)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
             photo_image = ImageTk.PhotoImage(image=captured_image)

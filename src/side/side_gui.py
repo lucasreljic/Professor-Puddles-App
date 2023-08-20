@@ -3,6 +3,7 @@ from tkinter import Canvas, messagebox
 from tkinter.ttk import Style, OptionMenu
 import cv2
 import json
+import time
 from PIL import Image, ImageTk
 from src.side.side_pose_detector import main, run
 
@@ -51,6 +52,7 @@ class SideGUI:
         self.firstRun = True
         self.integer = 0
         self.i = 0
+        self.time = time.time()
         with open('side_data.json') as json_file:
             self.loaded_data = json.load(json_file)
         self.dropdown = [self.loaded_data[0]["name"], self.loaded_data[0]["name"], self.loaded_data[1]["name"],
@@ -171,7 +173,7 @@ class SideGUI:
 
     def show_popup(self):
         self.inSetup = False
-        messagebox.showinfo("Popup", "Submitted")
+        messagebox.showinfo("Config", "Submitted!")
         self.savetoJson()
 
     def savetoJson(self):
@@ -201,12 +203,16 @@ class SideGUI:
     def setupRun(self):
         _, img = self.vid.read()
         self.frames+=1
-        img, data = run(img, self.i, self.detector, self.loaded_data, self.integer, True, entered_data=self.entered_data)
+        img, data, _, _ = run(img, self.i, self.detector, self.loaded_data, self.integer, True, entered_data=self.entered_data)
         opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
         captured_image = Image.fromarray(opencv_image)
         photo_image = ImageTk.PhotoImage(image=captured_image)
         self.label_widget.photo_image = photo_image
         self.label_widget.configure(image=photo_image)
+        if self.name.get() != "" and (time.time() - self.time) > 5:
+            self.inSetup = False
+            messagebox.showinfo("Config", "Data collection timeout, submitted!")
+            self.savetoJson()
         if self.inSetup:
             self.label_widget.after(10, self.setupRun)
         else:
@@ -214,6 +220,7 @@ class SideGUI:
 
     def setup(self):
         self.entered_data = {}
+        self.time = time.time()
         self.entered_data["name"] = ""
         self.entered_data["x0"] = 0
         self.entered_data["x2"] = 0
@@ -255,7 +262,7 @@ class SideGUI:
         if self.is_playing:
             _, img = self.vid.read()
             img = cv2.rotate(img, cv2.ROTATE_180)
-            img, _ = run(img, self.i, self.detector, self.loaded_data, self.integer, False)
+            img, self.time, self.i = run(img, self.i, self.detector, self.loaded_data, self.integer, False, timer=self.time)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             opencv_image = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
             captured_image = Image.fromarray(opencv_image)
