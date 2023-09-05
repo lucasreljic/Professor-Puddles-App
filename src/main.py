@@ -1,7 +1,5 @@
-from side.side_gui import side_gui
-from front.front_gui import front_gui
+from src.front_gui import front_gui
 import socket
-from time import sleep
 
 port = 8383
 host = '192.168.137.139'
