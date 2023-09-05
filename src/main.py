@@ -1,4 +1,4 @@
-from src.front_gui import front_gui
+from src.front.front_gui import front_gui
 import socket
 
 port = 8383

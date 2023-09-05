@@ -5,7 +5,7 @@ import cv2
 import json
 import time
 from PIL import Image, ImageTk
-from src.side_pose_detector import main, run
+from src.side.side_pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
