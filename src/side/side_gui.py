@@ -174,9 +174,9 @@ class SideGUI:
     def show_popup(self):
         self.inSetup = False
         messagebox.showinfo("Config", "Submitted!")
-        self.savetoJson()
+        self.saveto_json()
 
-    def savetoJson(self):
+    def saveto_json(self):
         self.entered_data["name"] = self.name.get()
         self.entered_data["x0"] /= self.frames 
         self.entered_data["x2"] /= self.frames
@@ -200,7 +200,7 @@ class SideGUI:
         with open('side_data.json', 'w') as json_file:
             json.dump(self.loaded_data, json_file, indent=4, separators=(',',':'))
 
-    def setupRun(self):
+    def setup_run(self):
         _, img = self.vid.read()
         self.frames+=1
         img, data, _, _ = run(img, self.i, self.detector, self.loaded_data, self.integer, True, entered_data=self.entered_data)
@@ -212,9 +212,9 @@ class SideGUI:
         if self.name.get() != "" and (time.time() - self.time) > 5:
             self.inSetup = False
             messagebox.showinfo("Config", "Data collection timeout, submitted!")
-            self.savetoJson()
+            self.saveto_json()
         if self.inSetup:
-            self.label_widget.after(10, self.setupRun)
+            self.label_widget.after(10, self.setup_run)
         else:
             return
 
@@ -241,14 +241,9 @@ class SideGUI:
         self.text_box, self.name = self.create_styled_textbox(0.07, 0.18, "light green")
         self.popup_btn = self.create_rounded_button("Submit", "light green", self.show_popup, 0.02, 0.3)
         self.inSetup = True
-        self.setupRun()
+        self.setup_run()
 
-        entry1 = tk.Entry(self.root) 
-        # canvas1.create_window(200, 140, window=entry1)
-        # data
-        # with open("front_data.json", "w") as json_file:
-        #     json.dump(data, json_file, indent=4)
-        #self.setupRun = False
+        tk.Entry(self.root)
 
     def update(self):
         # Capture the video frame by frame
@@ -288,6 +283,6 @@ def side_gui(pi_port):
     root.wm_iconphoto(False, photo)
     root.configure(bg="black")
     root.bind('<Escape>', lambda e: root.quit())
-    app = SideGUI(root, pi_port=pi_port)
+    SideGUI(root, pi_port=pi_port)
 
     root.mainloop()
