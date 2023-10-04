@@ -5,7 +5,7 @@ import cv2
 import json
 import time
 from PIL import Image, ImageTk
-from front.front_pose_detector import main, run
+from pose_detector import main, run
 
 LIGHT_MODE = {
     "bg": "white",
@@ -28,7 +28,7 @@ DARK_MODE = {
 }
 
 
-class FrontGUI:
+class GUI:
 
     def __init__(self, root, pi_port = None, video_source=0):
         self.root = root
@@ -54,7 +54,7 @@ class FrontGUI:
         self.time = time.time()
         print(self.time)
         self.inSetup = False
-        with open('front_data.json') as json_file:
+        with open('data.json') as json_file:
             self.loaded_data = json.load(json_file)
         self.dropdown_values = [self.loaded_data[0]["name"]]
         for k in range(10):
@@ -192,7 +192,7 @@ class FrontGUI:
         self.popup_btn.destroy()
         print("writing to json")
         self.loaded_data.append(self.entered_data)
-        with open('front_data.json', 'w') as json_file:
+        with open('data.json', 'w') as json_file:
             json.dump(self.loaded_data, json_file, indent=4, separators=(',', ':'))
         self.dropdown_values.append(self.name.get())
         self.dropdown_var.set(self.name.get())
@@ -262,13 +262,13 @@ class FrontGUI:
             self.vid.release()
 
 
-def front_gui(pi_port):
+def gui(pi_port):
     root = tk.Tk()
     ico = Image.open('duck.png')
     photo = ImageTk.PhotoImage(ico)
     root.wm_iconphoto(False, photo)
     root.configure(bg="black")
     root.bind('<Escape>', lambda e: root.quit())
-    FrontGUI(root, pi_port=pi_port)
+    GUI(root, pi_port=pi_port)
 
     root.mainloop()

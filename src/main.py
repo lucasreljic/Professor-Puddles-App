@@ -1,4 +1,4 @@
-from src.front.front_gui import front_gui
+from gui import gui
 import socket
 
 port = 8383
@@ -15,7 +15,7 @@ except:
 if connect:
     print("Successfully connected to duck!")
 if __name__ == "__main__":
-    front_gui(s)
+    gui(s)
     print("disconnecting...")
     try:
         s.send(bytes("end".encode('utf-8')))
