@@ -254,9 +254,6 @@ class GUI:
     def switch_to_side(self):
         self.root.destroy()
 
-        from src.side.side_gui import side_gui  # Lazy import to avoid circular import
-        side_gui(self.pi_port)
-
     def __del__(self):
         if self.vid.isOpened():
             self.vid.release()
