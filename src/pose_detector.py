@@ -3,8 +3,6 @@ import mediapipe as mp
 import math
 import winsound
 import base64
-import manage
-from puddlesdjango import views
 import time
 from windows_toasts import Toast, WindowsToaster
 import threading
@@ -170,14 +168,20 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 
 
 def main():
     detector = FrontPoseDetector()
-    # cap = cv2.VideoCapture(0)
-    # while True:
-    #     success, img = cap.read()
-    #     img = detector.findPose(img)
-    #     lmList = detector.getPosition(img)
-        #print(lmList)
-        # detector.showFps(img)
     return detector
+    # cap = cv2.VideoCapture(0)
+    # time.sleep(1)
+    # while not (cv2.waitKey(20) & 0xFF == ord('q')):
+    #     success, img = cap.read()
+    #     #lmList = detector.get_position(img)
+    #     #print(lmList)
+    #     #detector.showFps(img)
+        
+    #     if success:
+    #         img = detector.find_pose(img)
+    #         cv2.imshow('frame', img)
+    # cap.release()
+    # cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
