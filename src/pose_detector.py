@@ -170,23 +170,12 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 
 
 def main():
     detector = FrontPoseDetector()
-    cap = cv2.VideoCapture(0)
-    while True:
-        success, img = cap.read()
-        img = detector.findPose(img)
-        lmList = detector.getPosition(img)
+    # cap = cv2.VideoCapture(0)
+    # while True:
+    #     success, img = cap.read()
+    #     img = detector.findPose(img)
+    #     lmList = detector.getPosition(img)
         #print(lmList)
-          # Encode the frame as JPEG
-        _, buffer = cv2.imencode('.jpg', img)
-        frame_bytes = buffer.tobytes()
-
-        # Encode the frame in base64
-        frame_base64 = base64.b64encode(frame_bytes).decode('utf-8')
-
-        # Send the frame to Django backend
-        url = 'http://your-django-backend-url/api/send_frame/'
-        payload = {'frame': frame_base64}
-        response = views.post(url, json=payload)
         # detector.showFps(img)
     return detector
 

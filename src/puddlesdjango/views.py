@@ -1,15 +1,26 @@
 # views.py
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+import cv2
+from django.http import StreamingHttpResponse
+from django.views import View
+import pose_detector
 
-class SendFrameAPIView(APIView):
-    def post(self, request, *args, **kwargs):
-        frame_base64 = request.data.get('frame')
+class CameraView(View):
+    def get(self, request):
+        # Open the camera
+        cap = cv2.VideoCapture(0)  # 0 for default camera (you can specify a different camera index if needed)
 
-        if not frame_base64:
-            return Response({'error': 'Frame data is missing.'}, status=status.HTTP_400_BAD_REQUEST)
+        def generate_frames():
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                detector = pose_detector.main()
+                frame = detector.find_pose(frame)
+                #lmList = detector.get_position(frame)
+                # Convert the frame to JPEG format
+                _, buffer = cv2.imencode('.jpg', frame)
+                frame_data = buffer.tobytes()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame_data + b'\r\n')
 
-        # You can process the frame data here if needed
-
-        return Response({'message': 'Frame received successfully.'}, status=status.HTTP_200_OK)
+        return StreamingHttpResponse(generate_frames(), content_type='multipart/x-mixed-replace; boundary=frame')

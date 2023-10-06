@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from .views import CameraView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('camera/', CameraView.as_view(), name='camera_feed')
 ]
