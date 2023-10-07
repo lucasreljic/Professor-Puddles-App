@@ -23,6 +23,7 @@ class FrontPoseDetector():
         self.mpPose = mp.solutions.pose
         self.pose = self.mpPose.Pose(static_image_mode=self.mode, smooth_landmarks=self.smooth,
                                      min_detection_confidence=self.detectionCon, min_tracking_confidence=self.trackCon)
+        print(self.detectionCon)
 
     def find_pose(self, img, draw=True):
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -63,18 +64,18 @@ class FrontPoseDetector():
         if angle < 0:
             angle += 360
 
-        # Draw
-        if draw:
-            cv2.line(img, (x1, y1), (x2, y2), (255, 255, 255), 3)
-            cv2.line(img, (x3, y3), (x2, y2), (255, 255, 255), 3)
-            cv2.circle(img, (x1, y1), 10, (0, 0, 255), cv2.FILLED)
-            cv2.circle(img, (x1, y1), 15, (0, 0, 255), 1)
-            cv2.circle(img, (x2, y2), 10, (0, 0, 255), cv2.FILLED)
-            cv2.circle(img, (x2, y2), 15, (0, 0, 255), 1)
-            cv2.circle(img, (x3, y3), 10, (0, 0, 255), cv2.FILLED)
-            cv2.circle(img, (x3, y3), 15, (0, 0, 255), 1)
-            # cv2.putText(img, str(int(angle)), (x2 - 20, y2 + 50), cv2.FONT_HERSHEY_SIMPLEX,
-            #             1, (0, 0, 255), 2)
+        # # Draw comment out for faster performance
+        # if draw:
+        #     cv2.line(img, (x1, y1), (x2, y2), (255, 255, 255), 3)
+        #     cv2.line(img, (x3, y3), (x2, y2), (255, 255, 255), 3)
+        #     cv2.circle(img, (x1, y1), 10, (0, 0, 255), cv2.FILLED)
+        #     cv2.circle(img, (x1, y1), 15, (0, 0, 255), 1)
+        #     cv2.circle(img, (x2, y2), 10, (0, 0, 255), cv2.FILLED)
+        #     cv2.circle(img, (x2, y2), 15, (0, 0, 255), 1)
+        #     cv2.circle(img, (x3, y3), 10, (0, 0, 255), cv2.FILLED)
+        #     cv2.circle(img, (x3, y3), 15, (0, 0, 255), 1)
+        #     # cv2.putText(img, str(int(angle)), (x2 - 20, y2 + 50), cv2.FONT_HERSHEY_SIMPLEX,
+        #     #             1, (0, 0, 255), 2)
         return angle
     
 def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 0, pi_port = None):
@@ -118,8 +119,8 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 
             if i > 0:
                     i -=2
             timer = time.time()
-        print(good_poster)
-        print(i)
+        #print(good_poster)
+        #print(i)
         # Send notifications if bad posture
         if not good_poster and i < 52 and i > 50:
             print("first warning")
@@ -182,7 +183,3 @@ def main():
     #         cv2.imshow('frame', img)
     # cap.release()
     # cv2.destroyAllWindows()
-
-
-if __name__ == "__main__":
-    main()

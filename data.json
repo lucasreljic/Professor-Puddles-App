@@ -22,5 +22,23 @@
         "shoulder_nose_shoulder":85,
         "left_shoulder":315,
         "right_shoulder":45
+    },
+    {
+        "name":"smith",
+        "shoulder_nose_shoulder":0,
+        "left_shoulder":0,
+        "right_shoulder":0
+    },
+    {
+        "name":"ben",
+        "shoulder_nose_shoulder":0,
+        "left_shoulder":0,
+        "right_shoulder":0
+    },
+    {
+        "name":"luka",
+        "shoulder_nose_shoulder":0,
+        "left_shoulder":0,
+        "right_shoulder":0
     }
 ]
