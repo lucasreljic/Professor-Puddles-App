@@ -127,7 +127,22 @@ class CameraViewer(QMainWindow):
         self.layout.addWidget(self.buttonSettings)
         self.buttonSettings.setMaximumSize(25,25)
         self.buttonSettings.setIcon(QIcon("settings.png"))
-
+        self.buttonSettings.clicked.connect(self.show_settings_page)
+        
+        #camera
+        self.label = QLabel(self)
+        self.layout.addWidget(self.label)
+        
+        
+        #start/stop button
+        self.start_stop_button = QPushButton("Start")
+        self.start_stop_button.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 12px; }")
+        self.start_stop_button.setFont(QFont("Arial", 12, QFont.Bold))
+        self.start_stop_button.setGeometry(600,600, 100, 100)
+        self.start_stop_button.setMaximumWidth(200)
+        self.layout.addWidget(self.start_stop_button)
+        self.layout.setAlignment(self.start_stop_button, Qt.AlignCenter)
+        self.start_stop_button.clicked.connect(self.toggle_camera)
 
         self.stacked_widget = QStackedWidget(self)
         self.layout.addWidget(self.stacked_widget)
@@ -138,22 +153,6 @@ class CameraViewer(QMainWindow):
         self.settings_page = SettingsOverlay(self.back_to_main, self.loaded_data, self.user)
         self.stacked_widget.addWidget(self.settings_page)
 
-        self.buttonSettings.clicked.connect(self.show_settings_page)
-
-
-        #camera
-        self.label = QLabel(self)
-        self.layout.addWidget(self.label)
-        
-        
-        #start/stop button
-        self.start_stop_button = QPushButton("Start Camera")
-        self.start_stop_button.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 12px; }")
-        self.start_stop_button.setFont(QFont("Arial", 12, QFont.Bold))
-        self.start_stop_button.setGeometry(150, 100, 800, 300)
-        self.layout.addWidget(self.start_stop_button)
-        
-        self.start_stop_button.clicked.connect(self.toggle_camera)
         
 
         
