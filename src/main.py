@@ -1,7 +1,7 @@
 import cv2
 import sys
 import json
-from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtCore import QTimer, Qt, QPoint
 from PyQt5.QtGui import QImage, QPixmap, QFont, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QInputDialog, QComboBox, QStackedWidget
 import pose_detector
@@ -118,7 +118,8 @@ class CameraViewer(QMainWindow):
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
 
-        self.layout = QVBoxLayout()
+        self.layout = QVBoxLayout(self.central_widget)
+        self.layout.setContentsMargins(0,0,0,0)
         self.central_widget.setLayout(self.layout)
         
         
@@ -132,6 +133,7 @@ class CameraViewer(QMainWindow):
         #camera
         self.label = QLabel(self)
         self.layout.addWidget(self.label)
+        self.layout.setAlignment(self.label, Qt.AlignCenter)
         
         
         #start/stop button
@@ -143,7 +145,7 @@ class CameraViewer(QMainWindow):
         self.layout.addWidget(self.start_stop_button)
         self.layout.setAlignment(self.start_stop_button, Qt.AlignCenter)
         self.start_stop_button.clicked.connect(self.toggle_camera)
-
+        self.start_stop_button.move(QPoint(500,500))
         self.stacked_widget = QStackedWidget(self)
         self.layout.addWidget(self.stacked_widget)
         
@@ -202,6 +204,7 @@ class CameraViewer(QMainWindow):
         if ret:
             frame, data, _, self.i = pose_detector.run(frame, self.i, self.detector, self.loaded_data, 0, False)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.resize(frame, (360, 300))    
             image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(image)
             self.label.setPixmap(pixmap)
