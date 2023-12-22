@@ -6,6 +6,22 @@ from PyQt5.QtGui import QImage, QPixmap, QFont, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton, QInputDialog, QComboBox, QStackedWidget
 import pose_detector
 
+#adjust file paths for pyinstaller
+import sys
+import os
+def resource_path(relative_path):
+    if getattr(sys, 'frozen', False):
+        # Running as a PyInstaller one-file executable
+        base_path = sys._MEIPASS
+    else:
+        # Running as a script
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+    # Now you can use json_file_path to read or write to your JSON file
+
+
 class SettingsOverlay(QWidget):
     def __init__(self, back_action, loaded_data, user):
         super().__init__()
@@ -65,7 +81,7 @@ class SettingsOverlay(QWidget):
             return
         index = self.texts_combo.currentText()
         self.loaded_data = [entry for entry in self.loaded_data if entry["name"] != str(index)]
-        with open('data.json', 'w') as json_file:
+        with open(resource_path('data.json'), 'w') as json_file:
             json.dump(self.loaded_data, json_file, indent=4, separators=(',', ':'))
         self.texts_combo.clear()  # Clear existing items
         for i in self.loaded_data:
@@ -80,7 +96,7 @@ class SettingsOverlay(QWidget):
                                      "shoulder_nose_shoulder": 0,
                                             "left_shoulder": 0,
                                             "right_shoulder": 0 })
-            with open('data.json', 'w') as json_file:
+            with open(resource_path('data.json'), 'w') as json_file:
                 json.dump(self.loaded_data, json_file, indent=4, separators=(',', ':'))
             self.texts_combo.clear()  # Clear existing items
             for i in self.loaded_data:
@@ -99,10 +115,12 @@ class CameraViewer(QMainWindow):
         super().__init__()
         #setup detector
         self.detector = pose_detector.main()
+        self.loaded_data = []
         self.i = 0
         #open json data file
         try:
-            with open('data.json') as json_file:
+            print("trying to access data")
+            with open(resource_path('data.json')) as json_file:
                 self.loaded_data = json.load(json_file)
         except FileNotFoundError:
             print("JSON file not found.")
@@ -127,7 +145,7 @@ class CameraViewer(QMainWindow):
         self.buttonSettings = QPushButton("", self)
         self.layout.addWidget(self.buttonSettings)
         self.buttonSettings.setMaximumSize(25,25)
-        self.buttonSettings.setIcon(QIcon("settings.png"))
+        self.buttonSettings.setIcon(QIcon(resource_path("settings.png")))
         self.buttonSettings.clicked.connect(self.show_settings_page)
         
         #camera
