@@ -22,5 +22,29 @@
         "shoulder_nose_shoulder":85,
         "left_shoulder":315,
         "right_shoulder":45
+    },
+    {
+        "name":"Polly",
+        "shoulder_nose_shoulder":82.20111453373396,
+        "left_shoulder":309.11622587137015,
+        "right_shoulder":43.432714281487904
+    },
+    {
+        "name":"Me",
+        "shoulder_nose_shoulder":80.25078589282002,
+        "left_shoulder":307.97197106094876,
+        "right_shoulder":44.826646142944156
+    },
+    {
+        "name":"ne",
+        "shoulder_nose_shoulder":80.01593392447334,
+        "left_shoulder":307.18570161001287,
+        "right_shoulder":44.50232136339791
+    },
+    {
+        "name":"sa",
+        "shoulder_nose_shoulder":79.0962895510085,
+        "left_shoulder":307.34647885366775,
+        "right_shoulder":45.71406519899326
     }
 ]

@@ -92,9 +92,9 @@ def run(img, i, detector, data, dropdown, getData, entered_data = None, timer = 
 
     good_poster = True
     if getData:
-        entered_data["shoulder_nose_shoulder"] += front_posture
-        entered_data["left_shoulder"] += left_shoulder
-        entered_data["right_shoulder"] += right_shoulder
+        entered_data[dropdown]["shoulder_nose_shoulder"] += front_posture
+        entered_data[dropdown]["left_shoulder"] += left_shoulder
+        entered_data[dropdown]["right_shoulder"] += right_shoulder
     else:    
         # The actual criteria for a good posture
         if front_posture < data[dropdown]["shoulder_nose_shoulder"] - 10 \

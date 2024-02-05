@@ -74,6 +74,7 @@ class SettingsOverlay(QWidget):
 
     def back_to_main(self):
         if self.back_action:
+            self.user = self.texts_combo.currentIndex()
             self.back_action(self.user)
             
     def delete_user(self):
@@ -125,13 +126,13 @@ class CameraViewer(QMainWindow):
         except FileNotFoundError:
             print("JSON file not found.")
         
-        self.user = self.loaded_data[0]["name"]
+        self.user = 0
             
         #pyqt stuff
         self.setWindowTitle("Professor Puddles")
         self.setFixedSize(600,600)
         self.menuWidget()
-        self.setGeometry(0, 0, 600, 600)
+        self.setGeometry(600, 200, 600, 600)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -152,7 +153,27 @@ class CameraViewer(QMainWindow):
         self.label = QLabel(self)
         self.layout.addWidget(self.label)
         self.layout.setAlignment(self.label, Qt.AlignCenter)
+        pixmap = QPixmap('camera.png')
+        pixmap.scaled(120, 100, 1)
+        self.label.setPixmap(pixmap)
         
+        #countdown stuff
+        self.startCountdown = QPushButton("Collect Ideal Sitting Data", self)
+        self.startCountdown.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 12px; }")
+        self.startCountdown.setFont(QFont("Arial", 12, QFont.Bold))
+        self.startCountdown.setGeometry(600,500, 100, 100)
+        self.startCountdown.setMaximumWidth(800)
+        self.collectData = False
+        self.startCountdown.clicked.connect(self.isDataCollected)
+        
+        self.countTimer = QTimer()
+        self.time_left = 10
+        self.labelTimer = QLabel(self)
+        self.countTimer.stop()
+        self.labelTimer.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 12px; }")
+        self.labelTimer.setFont(QFont("Arial", 12, QFont.Bold))
+        self.labelTimer.setGeometry(300,400, 200, 100)
+        self.labelTimer.setMaximumWidth(800)
         
         #start/stop button
         self.start_stop_button = QPushButton("Start")
@@ -166,6 +187,7 @@ class CameraViewer(QMainWindow):
         self.start_stop_button.move(QPoint(500,500))
         self.stacked_widget = QStackedWidget(self)
         self.layout.addWidget(self.stacked_widget)
+        self.optimizeTrig = False
         
         self.main_page = QWidget()
         self.stacked_widget.addWidget(self.main_page)
@@ -196,7 +218,10 @@ class CameraViewer(QMainWindow):
         self.start_stop_button.show()
         self.stacked_widget.setCurrentWidget(self.main_page)
 
-      
+    def isDataCollected(self):
+        self.collectData = True
+        self.startCountdown.hide()
+        
     def show_overlay(self):
         overlay_dialog = SettingsOverlay()
         overlay_dialog.setModal(True)
@@ -212,6 +237,7 @@ class CameraViewer(QMainWindow):
             if self.capture is not None:
                 self.capture.release()
                 self.timer.stop()
+            self.labelTimer.clear()
             self.start_stop_button.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 10px 20px;  border-radius: 12px;}")
             self.start_stop_button.setText("Start")
         self.camera_running = not self.camera_running
@@ -219,14 +245,59 @@ class CameraViewer(QMainWindow):
     def update_camera(self):
         ret, frame = self.capture.read()
         frame = self.detector.find_pose(frame)
-        if ret:
-            frame, data, _, self.i = pose_detector.run(frame, self.i, self.detector, self.loaded_data, 0, False)
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame = cv2.resize(frame, (360, 300))    
-            image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
-            pixmap = QPixmap.fromImage(image)
-            self.label.setPixmap(pixmap)
+        # check if data exists
+        if self.loaded_data[self.user]["shoulder_nose_shoulder"] == 0 or self.collectData:
+            #data needs to be collected
+            self.layout.addWidget(self.startCountdown)
+            self.layout.setAlignment(self.startCountdown, Qt.AlignCenter)
             
+        if(self.collectData):
+            self.layout.addWidget(self.startCountdown)
+            self.layout.setAlignment(self.startCountdown, Qt.AlignCenter)
+            if not self.countTimer.isActive():
+                self.countTimer.start()
+                self.i = 0
+            if self.time_left > 0:
+                self.labelTimer.setText(str(round(self.time_left)) + "    ")
+                self.time_left -= 1/10
+
+            if self.time_left < 0:
+                self.countTimer.stop() #stop the timer
+                self.labelTimer.setText("Done!")
+                self.loaded_data[self.user]["shoulder_nose_shoulder"] /= self.i # Average the data
+                self.loaded_data[self.user]["left_shoulder"] /= self.i
+                self.loaded_data[self.user]["right_shoulder"] /= self.i
+                self.i = 0 # reset i counter
+                with open(resource_path('data.json'), 'w') as json_file: # Save the data to the JSON file
+                    json.dump(self.loaded_data, json_file, indent=4, separators=(',', ':'))
+                self.collectData = False
+            if ret:
+                frame, data, _, self.i = pose_detector.run(frame, self.i, self.detector, self.loaded_data, self.user, True, entered_data=self.loaded_data)
+                self.loaded_data = data
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame = cv2.resize(frame, (360, 300))    
+                image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
+                pixmap = QPixmap.fromImage(image)
+                self.label.setPixmap(pixmap)
+        else:    
+            if self.isMinimized() and not self.optimizeTrig: # update every 400ms if not visible
+                self.timer.stop()
+                self.timer.start(200)
+                self.optimizeTrig = True
+            elif not self.isMinimized() and self.optimizeTrig:# update every 10ms if visible
+                self.timer.stop()
+                self.timer.start(10)
+                self.optimizeTrig = False
+                
+                
+            if ret: # run the pose detector
+                frame, data, _, self.i = pose_detector.run(frame, self.i, self.detector, self.loaded_data, self.user, False)
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame = cv2.resize(frame, (360, 300))    
+                image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
+                pixmap = QPixmap.fromImage(image)
+                self.label.setPixmap(pixmap)
+                
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
