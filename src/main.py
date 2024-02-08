@@ -115,7 +115,7 @@ class CameraViewer(QMainWindow):
     def __init__(self):
         super().__init__()
         #setup detector
-        self.detector = pose_detector.main()
+        self.detector = pose_detector.PoseDetector()
         self.loaded_data = []
         self.i = 0
         #open json data file
@@ -139,55 +139,63 @@ class CameraViewer(QMainWindow):
 
         self.layout = QVBoxLayout(self.central_widget)
         self.layout.setContentsMargins(0,0,0,0)
-        self.central_widget.setLayout(self.layout)
+
         
         
         #Settings button
         self.buttonSettings = QPushButton("", self)
         self.layout.addWidget(self.buttonSettings)
-        self.buttonSettings.setMaximumSize(25,25)
+        self.buttonSettings.setMaximumSize(40,55)
         self.buttonSettings.setIcon(QIcon(resource_path("settings.png")))
+        self.buttonSettings.setIconSize(self.buttonSettings.size())
         self.buttonSettings.clicked.connect(self.show_settings_page)
+        
         
         #camera
         self.label = QLabel(self)
+        self.label.setStyleSheet("QLabel { color: white; padding: 0px 0px;}")
+        pixmap = QPixmap(resource_path("camera.png"))
+        pixmap = pixmap.scaledToWidth(380)
+        self.label.setFixedSize(380, 300)
         self.layout.addWidget(self.label)
         self.layout.setAlignment(self.label, Qt.AlignCenter)
-        pixmap = QPixmap('camera.png')
-        pixmap.scaled(120, 100, 1)
         self.label.setPixmap(pixmap)
         
+        
+                
         #countdown stuff
         self.startCountdown = QPushButton("Collect Ideal Sitting Data", self)
-        self.startCountdown.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 12px; }")
+        self.startCountdown.setStyleSheet("QPushButton { background-color: #000000; color: white; padding: 10px 20px; border-radius: 12px; }")
         self.startCountdown.setFont(QFont("Arial", 12, QFont.Bold))
-        self.startCountdown.setGeometry(600,500, 100, 100)
         self.startCountdown.setMaximumWidth(800)
         self.collectData = False
+        self.layout.addWidget(self.startCountdown)
         self.startCountdown.clicked.connect(self.isDataCollected)
+        self.layout.setAlignment(self.startCountdown, Qt.AlignCenter)
+        self.startCountdown.hide()
         
+        
+        #countdown timer
         self.countTimer = QTimer()
         self.time_left = 10
         self.labelTimer = QLabel(self)
         self.countTimer.stop()
-        self.labelTimer.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 12px; }")
+        self.labelTimer.setStyleSheet("QLabel { padding: 10px 20px; margin: 10px 10px; border-radius: 12px; }")
         self.labelTimer.setFont(QFont("Arial", 12, QFont.Bold))
-        self.labelTimer.setGeometry(300,400, 200, 100)
-        self.labelTimer.setMaximumWidth(800)
+        self.labelTimer.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.labelTimer)
         
         #start/stop button
         self.start_stop_button = QPushButton("Start")
-        self.start_stop_button.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 12px; }")
+        self.start_stop_button.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 10px 20px; margin: 10px 10px; border-radius: 12px; }")
         self.start_stop_button.setFont(QFont("Arial", 12, QFont.Bold))
-        self.start_stop_button.setGeometry(600,600, 100, 100)
-        self.start_stop_button.setMaximumWidth(200)
         self.layout.addWidget(self.start_stop_button)
         self.layout.setAlignment(self.start_stop_button, Qt.AlignCenter)
         self.start_stop_button.clicked.connect(self.toggle_camera)
-        self.start_stop_button.move(QPoint(500,500))
         self.stacked_widget = QStackedWidget(self)
         self.layout.addWidget(self.stacked_widget)
         self.optimizeTrig = False
+        
         
         self.main_page = QWidget()
         self.stacked_widget.addWidget(self.main_page)
@@ -195,7 +203,7 @@ class CameraViewer(QMainWindow):
         self.settings_page = SettingsOverlay(self.back_to_main, self.loaded_data, self.user)
         self.stacked_widget.addWidget(self.settings_page)
 
-        
+        self.central_widget.setLayout(self.layout)
 
         
         self.timer = QTimer(self)
@@ -206,12 +214,20 @@ class CameraViewer(QMainWindow):
     def show_settings_page(self):
         self.buttonSettings.hide()
         self.label.hide()
+        self.labelTimer.hide()
+        self.startCountdown.hide()
         self.start_stop_button.hide()
 
         self.stacked_widget.setCurrentWidget(self.settings_page)
 
     def back_to_main(self, user):
         # Show main page widgets
+        try: # reload data after settings page
+            print("trying to access data")
+            with open(resource_path('data.json')) as json_file:
+                self.loaded_data = json.load(json_file)
+        except FileNotFoundError:
+            print("JSON file not found.")
         self.user = user
         self.buttonSettings.show()
         self.label.show()
@@ -238,6 +254,7 @@ class CameraViewer(QMainWindow):
                 self.capture.release()
                 self.timer.stop()
             self.labelTimer.clear()
+            self.i = 0
             self.start_stop_button.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 10px 20px;  border-radius: 12px;}")
             self.start_stop_button.setText("Start")
         self.camera_running = not self.camera_running
@@ -248,34 +265,46 @@ class CameraViewer(QMainWindow):
         # check if data exists
         if self.loaded_data[self.user]["shoulder_nose_shoulder"] == 0 or self.collectData:
             #data needs to be collected
-            self.layout.addWidget(self.startCountdown)
-            self.layout.setAlignment(self.startCountdown, Qt.AlignCenter)
+            if not self.collectData:
+                self.startCountdown.show()
+            self.labelTimer.show()
             
         if(self.collectData):
-            self.layout.addWidget(self.startCountdown)
-            self.layout.setAlignment(self.startCountdown, Qt.AlignCenter)
+            
+            # show countdown???
             if not self.countTimer.isActive():
                 self.countTimer.start()
+                self.startCountdown.hide()
                 self.i = 0
             if self.time_left > 0:
-                self.labelTimer.setText(str(round(self.time_left)) + "    ")
+                self.labelTimer.setText(str(round(self.time_left)))
                 self.time_left -= 1/10
 
             if self.time_left < 0:
                 self.countTimer.stop() #stop the timer
                 self.labelTimer.setText("Done!")
+                if self.i == 0: # fix division by zero error
+                    self.i = 1
                 self.loaded_data[self.user]["shoulder_nose_shoulder"] /= self.i # Average the data
                 self.loaded_data[self.user]["left_shoulder"] /= self.i
                 self.loaded_data[self.user]["right_shoulder"] /= self.i
                 self.i = 0 # reset i counter
                 with open(resource_path('data.json'), 'w') as json_file: # Save the data to the JSON file
                     json.dump(self.loaded_data, json_file, indent=4, separators=(',', ':'))
+                
+                try: # reload data after writing
+                    print("trying to access data")
+                    with open(resource_path('data.json')) as json_file:
+                        self.loaded_data = json.load(json_file)
+                except FileNotFoundError:
+                    print("JSON file not found.")
+                self.time_left = 10
                 self.collectData = False
             if ret:
-                frame, data, _, self.i = pose_detector.run(frame, self.i, self.detector, self.loaded_data, self.user, True, entered_data=self.loaded_data)
+                frame, data, _, self.i = self.detector.run(frame, self.i, self.loaded_data, self.user, True, entered_data=self.loaded_data)
                 self.loaded_data = data
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                frame = cv2.resize(frame, (360, 300))    
+                frame = cv2.resize(frame, (380, 300))    
                 image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
                 pixmap = QPixmap.fromImage(image)
                 self.label.setPixmap(pixmap)
@@ -291,9 +320,9 @@ class CameraViewer(QMainWindow):
                 
                 
             if ret: # run the pose detector
-                frame, data, _, self.i = pose_detector.run(frame, self.i, self.detector, self.loaded_data, self.user, False)
+                frame, data, _, self.i = self.detector.run(frame, self.i, self.loaded_data, self.user, False)
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                frame = cv2.resize(frame, (360, 300))    
+                frame = cv2.resize(frame, (380, 300))    
                 image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
                 pixmap = QPixmap.fromImage(image)
                 self.label.setPixmap(pixmap)

@@ -10,7 +10,7 @@ a = Analysis(
     ['src\\main.py'],
     pathex=[],
     binaries=[],
-    datas=[('.venv\\Lib\\site-packages\\mediapipe\\modules', 'mediapipe\\modules'),( 'data.json', '.'),('settings.png', '.')],
+    datas=[('.venv\\Lib\\site-packages\\mediapipe\\modules', 'mediapipe\\modules'),( 'data.json', '.'),('settings.png', '.'),('camera.png', '.'),('Quack.wav', '.'),('Stop.wav', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
