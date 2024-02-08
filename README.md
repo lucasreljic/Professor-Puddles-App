@@ -1,5 +1,5 @@
 # Professor Puddles - Posture Monitoring App
-**BETA**
+**IN BETA**
 ## Overview
 
 Professor Puddles is a posture-monitoring application designed to help users maintain a healthy posture while working on their laptops. The application utilizes the front camera of the laptop to track the user's posture from various angles, providing real-time feedback and notifications to encourage good posture habits.
