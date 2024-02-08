@@ -37,7 +37,7 @@ To use Professor Puddles, simply download the latest release from the [Releases]
 
 ## Contributing
 
-If you'd like to contribute to Professor Puddles, please message me on [discord](discordapp.com/users/267683289454608384).
+If you'd like to contribute to Professor Puddles, please message me on [discord](http://discordapp.com/users/267683289454608384).
 
 ## License
 
