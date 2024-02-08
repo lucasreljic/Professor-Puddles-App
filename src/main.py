@@ -279,7 +279,15 @@ class CameraViewer(QMainWindow):
             if self.time_left > 0:
                 self.labelTimer.setText(str(round(self.time_left)))
                 self.time_left -= 1/10
-
+                
+                if ret: # run the pose detector
+                    frame, data, _, self.i = self.detector.run(frame, self.i, self.loaded_data, self.user, True, entered_data=self.loaded_data)
+                    self.loaded_data = data
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    frame = cv2.resize(frame, (380, 300))    
+                    image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
+                    pixmap = QPixmap.fromImage(image)
+                    self.label.setPixmap(pixmap)
             if self.time_left < 0:
                 self.countTimer.stop() #stop the timer
                 self.labelTimer.setText("Done!")
@@ -300,14 +308,6 @@ class CameraViewer(QMainWindow):
                     print("JSON file not found.")
                 self.time_left = 10
                 self.collectData = False
-            if ret:
-                frame, data, _, self.i = self.detector.run(frame, self.i, self.loaded_data, self.user, True, entered_data=self.loaded_data)
-                self.loaded_data = data
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                frame = cv2.resize(frame, (380, 300))    
-                image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
-                pixmap = QPixmap.fromImage(image)
-                self.label.setPixmap(pixmap)
         else:    
             if self.isMinimized() and not self.optimizeTrig: # update every 400ms if not visible
                 self.timer.stop()
@@ -318,9 +318,8 @@ class CameraViewer(QMainWindow):
                 self.timer.start(10)
                 self.optimizeTrig = False
                 
-                
             if ret: # run the pose detector
-                frame, data, _, self.i = self.detector.run(frame, self.i, self.loaded_data, self.user, False)
+                frame, _, _, self.i = self.detector.run(frame, self.i, self.loaded_data, self.user, False)
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 frame = cv2.resize(frame, (380, 300))    
                 image = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
