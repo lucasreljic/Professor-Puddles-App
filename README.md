@@ -1,2 +1,2 @@
-# Professor Puddles Python
-Back-End for the Professor Puddles app.
+# Professor Puddles App
+Beta release of the Professor Puddles App
