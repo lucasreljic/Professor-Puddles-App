@@ -12,7 +12,7 @@ Professor Puddles is a posture-monitoring application designed to help users mai
 
 ## Getting Started
 
-To use Professor Puddles, simply download the latest release from the [Releases](link-to-releases-page) page and follow these steps:
+To use Professor Puddles, simply download the latest release from the [Releases](https://github.com/lucasreljic/Professor-Puddles-App/releases/tag/0.0.1) page and follow these steps:
 
 1. **Run the Installer:**
    Execute the provided installer to set up Professor Puddles on your system.
